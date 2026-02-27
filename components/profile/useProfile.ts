@@ -3,7 +3,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useForm, Controller } from "react-hook-form";
 import authService from "@/services/auth";
 import { setUser } from "@/store/slices/auth";
@@ -17,7 +17,6 @@ interface ProfileFormValues {
 
 const useProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { toast } = useToast();
   const [showPasswordDialog, setShowPasswordDialog] = useState<boolean>(false);
   const { user } = useSelector((state: RootState) => state.auth);
   const [loader, setLoader] = useState<boolean>(false);
@@ -43,19 +42,15 @@ const useProfile = () => {
 
       if (res?.success) {
         dispatch(setUser({ user: res?.data }));
-        toast({
-          title: "Profile updated",
-          description: "Your profile information has been saved successfully.",
-        });
+   
+         toast.success(
+    "Your profile information has been saved successfully."
+    );
       }
     } catch (error: any) {
-      toast({
-        title: "Profile update failed",
-        description:
-          error?.response?.data?.message ||
-          "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
+      toast.error(
+    error?.response?.data?.message 
+    );
     } finally {
       setLoader(false);
     }

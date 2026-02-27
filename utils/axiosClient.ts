@@ -5,13 +5,8 @@ import axios, {
   AxiosError,
 } from "axios";
 
-// import { toast } from "react-toastify";
-
 import Cookies from "js-cookie";
 import apiEndpoints from "./apiConfig";
-import { dispatchApiError } from "@/app/api/event";
-import { toast } from "@/components/ui/use-toast";
-import { showToast } from "@/lib/toast";
 
 interface ErrorResponseData {
   message?: string; // Define the `message` property as optional

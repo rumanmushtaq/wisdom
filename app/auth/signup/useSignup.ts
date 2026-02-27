@@ -8,10 +8,12 @@ import { useToast } from "@/components/ui/use-toast";
 import { AppDispatch } from "@/store/store";
 import { useDispatch } from "react-redux";
 import { loginSuccess, setUser } from "@/store/slices/auth";
+import { toast } from "sonner";
+
 
 const useSignup = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { toast } = useToast();
+ 
   const searchParams = useSearchParams();
   const referralCode = searchParams.get("ref") ?? undefined;
   const [showPassword, setShowPassword] = useState<{
@@ -81,11 +83,11 @@ const useSignup = () => {
       }
     } catch (error: any) {
       console.log("err", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message || error.response.data.message,
-      });
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong"
+      );
     }
   };
   return {

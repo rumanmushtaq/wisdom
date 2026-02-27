@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
+
 
 type ApiErrorPayload = {
   message: string;
@@ -9,19 +10,16 @@ type ApiErrorPayload = {
 };
 
 export default function ApiToastProvider() {
-  const { toast } = useToast();
+
 
   useEffect(() => {
     const handler = (event: Event) => {
       const customEvent = event as CustomEvent<ApiErrorPayload>;
 
-      toast({
-        variant: "destructive",
-        title: customEvent.detail.status
-          ? `Error ${customEvent.detail.status}`
-          : "Error",
-        description: customEvent.detail.message,
-      });
+      toast.error(
+    customEvent.detail.message
+    
+    );
     };
 
     window.addEventListener("api-error", handler);

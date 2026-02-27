@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { useToast } from "@/hooks/use-toast";
+
+import { toast } from "sonner";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import authService from "@/services/auth";
@@ -16,7 +16,7 @@ interface ChangePasswordDialogProps {
 }
 
 const useChangePassword = ({ onOpenChange }: ChangePasswordDialogProps) => {
-  const { toast } = useToast();
+
   const {
     handleSubmit,
     control,
@@ -37,11 +37,11 @@ const useChangePassword = ({ onOpenChange }: ChangePasswordDialogProps) => {
 
     // ✅ Check password match
     if (newPassword !== confirmPassword) {
-      toast({
-        title: "Password mismatch",
-        description: "New password and confirm password do not match.",
-        variant: "destructive",
-      });
+   
+
+      toast.error(
+       "New password and confirm password do not match.",
+      );
       return;
     }
 
@@ -50,17 +50,18 @@ const useChangePassword = ({ onOpenChange }: ChangePasswordDialogProps) => {
         currentPassword,
         newPassword,
       });
-
-      toast({
-        title: "Password changed",
-        description: "Your password has been updated successfully.",
-      });
+       toast.success(
+        "Your password has been updated successfully."
+      );
     } catch (error: any) {
-      toast({
-        title: "Failed to change password",
-        description: error?.response?.data?.message || "Something went wrong",
-        variant: "destructive",
-      });
+   
+
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong"
+      );
+
     } finally {
       onOpenChange(false);
     }

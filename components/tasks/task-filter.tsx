@@ -7,10 +7,10 @@ type TaskStatus = "all" | "PENDING" | "IN_PROGRESS" | "COMPLETED"
 
 interface TaskFilterProps {
   onFilterChange?: (status: TaskStatus) => void
-  counts?: Record<TaskStatus, number>
+  counts?: Partial<Record<TaskStatus, number>>
 }
 
-export function TaskFilter({ onFilterChange, counts = {} }: TaskFilterProps) {
+export function TaskFilter({ onFilterChange, counts }: TaskFilterProps) {
   const [activeFilter, setActiveFilter] = useState<TaskStatus>("all")
 
   const filters: { label: string; value: TaskStatus }[] = [
@@ -27,20 +27,27 @@ export function TaskFilter({ onFilterChange, counts = {} }: TaskFilterProps) {
 
   return (
     <div className="glass p-4 rounded-xl flex flex-wrap gap-2">
-      {filters.map((filter) => (
-        <Button
-          key={filter.value}
-          onClick={() => handleFilterChange(filter.value)}
-          variant={activeFilter === filter.value ? "default" : "outline"}
-          size="sm"
-          className="rounded-lg"
-        >
-          {filter.label}
-          {counts[filter.value] ? (
-            <span className="ml-2 px-2 py-0.5 bg-foreground/10 rounded-full text-xs">{counts[filter.value]}</span>
-          ) : null}
-        </Button>
-      ))}
+      {filters.map((filter) => {
+        const count = counts?.[filter.value] ?? 0
+
+        return (
+          <Button
+            key={filter.value}
+            onClick={() => handleFilterChange(filter.value)}
+            variant={activeFilter === filter.value ? "default" : "outline"}
+            size="sm"
+            className="rounded-lg"
+          >
+            {filter.label}
+
+            {count > 0 && (
+              <span className="ml-2 px-2 py-0.5 bg-foreground/10 rounded-full text-xs">
+                {count}
+              </span>
+            )}
+          </Button>
+        )
+      })}
     </div>
   )
 }

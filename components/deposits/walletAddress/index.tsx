@@ -2,31 +2,26 @@
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-
+import { toast } from "sonner";
 interface WalletAddressDisplayProps {
   address: string;
 }
 
 export function WalletAddressDisplay({ address }: WalletAddressDisplayProps) {
   const [copied, setCopied] = useState(false);
-  const { toast } = useToast();
+
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(address);
       setCopied(true);
-      toast({
-        title: "Address Copied!",
-        description: "Wallet address copied to clipboard",
-      });
+   
+      toast.success("Wallet address copied to clipboard");
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      toast({
-        title: "Copy Failed",
-        description: "Please copy the address manually",
-        variant: "destructive",
-      });
+  
+
+        toast.error("Please copy the address manually");
     }
   };
 

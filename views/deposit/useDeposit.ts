@@ -2,9 +2,12 @@
 import { AppDispatch, RootState } from "@/store/store";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import depositService from "@/services/deposit";
 import { addDepositToTop, setDeposits } from "@/store/slices/deposit";
+
+
+
 const useDeposit = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { packages, deposits } = useSelector((state: RootState) => {
@@ -13,7 +16,7 @@ const useDeposit = () => {
       deposits: state.deposit.deposits,
     };
   });
-  const { toast } = useToast();
+
 
   const handleDepositSubmit = async (data: any) => {
     const payload = {
@@ -28,10 +31,10 @@ const useDeposit = () => {
       dispatch(addDepositToTop(result?.data));
     } catch (error) {}
 
-    toast({
-      title: "Deposit Submitted!",
-      description: "Your deposit is pending admin approval.",
-    });
+
+     toast.success(
+       "Your deposit is pending admin approval."
+      );
   };
 
   const pendingCount = deposits.filter((d) => d.status === "pending").length;
