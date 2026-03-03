@@ -56,7 +56,7 @@ const authSlice = createSlice({
       action: PayloadAction<{
         accessToken: string;
         refreshToken: string;
-      }>
+      }>,
     ) => {
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
@@ -66,17 +66,13 @@ const authSlice = createSlice({
     setUser: (
       state,
       action: PayloadAction<{
-        user: User
-      }>
+        user: User;
+      }>,
     ) => {
       state.user = action.payload.user;
     },
 
-    logout: (state) => {
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.isAuthenticated = false;
-    },
+    logout: () => initialState,
   },
 });
 

@@ -8,47 +8,13 @@ import { useRouter } from "next/navigation";
 
 const useDashboard = () => {
   const router = useRouter();
-  const [loader, setLoader] = useState<{
-    packages: boolean;
-  }>({
-    packages: false,
-  });
-  const dispatch = useDispatch<AppDispatch>();
-  const { packages } = useSelector((state: RootState) => state.packages);
-  const { accessToken, refreshToken , user} = useSelector(
-    (state: RootState) => state.auth
+
+  const { accessToken, refreshToken, user } = useSelector(
+    (state: RootState) => state.auth,
   );
-console.log("user", user)
-  const handleToGetAllPackages = async () => {
-    setLoader((prev) => ({ ...prev, packages: true }));
-    try {
-      const { data } = await packageService.getAllPackages({});
+  console.log("user", user);
 
-      dispatch(setPackages(data?.data));
-    } catch (error) {
-      console.log("error:::::", error);
-    } finally {
-      setLoader((prev) => ({ ...prev, packages: false }));
-    }
-  };
-
-  const handleToChosePlan = (packageId: string) => {
-
-    console.log("i am calling")
-    console.log("accessToken", accessToken)
-    console.log("refreshToken", refreshToken)
-    if (!user) {
-      router.push("/auth/signup");
-      return;
-    } else {
-      router.push(`/deposit?id=${packageId}`);
-    }
-  };
-
-  useEffect(() => {
-    handleToGetAllPackages();
-  }, []);
-  return { packages , handleToChosePlan};
+  return {accessToken, refreshToken, user};
 };
 
 export default useDashboard;

@@ -60,7 +60,7 @@ export function DepositsTable({ deposits }: DepositsTableProps) {
     return `${id.slice(0, 8)}...${id.slice(-6)}`;
   };
 
-  if (deposits.length === 0) {
+  if (deposits?.length === 0) {
     return (
       <div className="glass-hover p-12 rounded-xl text-center">
         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
@@ -103,7 +103,7 @@ export function DepositsTable({ deposits }: DepositsTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {deposits.map((deposit, index) => (
+          {deposits?.map((deposit, index) => (
             <TableRow
               key={deposit?._id}
               className="border-border/20 hover:bg-secondary/30 transition-colors animate-slide-up"
@@ -114,13 +114,13 @@ export function DepositsTable({ deposits }: DepositsTableProps) {
               </TableCell>
               <TableCell>
                 <span className="font-bold text-lg">
-                  ${deposit.amount.toLocaleString()}
+                  ${deposit?.amount.toLocaleString()}
                 </span>
                 <span className="text-muted-foreground text-sm ml-1">USDT</span>
               </TableCell>
               <TableCell>
                 <code className="px-2 py-1 bg-secondary/50 rounded text-xs font-mono">
-                  {truncateId(deposit.transactionId)}
+                  {truncateId(deposit?.transactionId)}
                 </code>
               </TableCell>
               <TableCell>
@@ -138,7 +138,7 @@ export function DepositsTable({ deposits }: DepositsTableProps) {
                 )}
               </TableCell>
               <TableCell className="text-right">
-                {getStatusBadge(deposit.status)}
+                {getStatusBadge(deposit?.status)}
               </TableCell>
             </TableRow>
           ))}

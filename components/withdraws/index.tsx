@@ -87,18 +87,18 @@ const Index = ({ user, usersWallets }: any) => {
               <div className="space-y-2">
                 {usersWallets?.map((addr: any) => (
                   <label
-                    key={addr._id}
+                    key={addr?._id}
                     className="flex items-center gap-3 p-3 border border-border/20 rounded-lg cursor-pointer"
                   >
                     <input
                       type="radio"
-                      value={addr._id}
-                      checked={field.value === addr._id}
-                      onChange={() => field.onChange(addr._id)}
+                      value={addr?._id}
+                      checked={field.value === addr?._id}
+                      onChange={() => field.onChange(addr?._id)}
                     />
                     <div>
-                      <p className="font-medium text-sm">{addr.name}</p>
-                      <p className="text-xs font-mono">{addr.address}</p>
+                      <p className="font-medium text-sm">{addr?.name}</p>
+                      <p className="text-xs font-mono">{addr?.address}</p>
                     </div>
                   </label>
                 ))}

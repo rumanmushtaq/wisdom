@@ -10,12 +10,8 @@ import { addDepositToTop, setDeposits } from "@/store/slices/deposit";
 
 const useDeposit = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { packages, deposits } = useSelector((state: RootState) => {
-    return {
-      packages: state.packages.packages,
-      deposits: state.deposit.deposits,
-    };
-  });
+  const { packages } = useSelector((state: RootState) => state.packages);
+  const { deposits } = useSelector((state: RootState) => state.deposit);
 
 
   const handleDepositSubmit = async (data: any) => {
@@ -37,10 +33,10 @@ const useDeposit = () => {
       );
   };
 
-  const pendingCount = deposits.filter((d) => d.status === "pending").length;
+  const pendingCount = deposits?.filter((d) => d?.status === "pending")?.length;
   const approvedTotal = deposits
-    .filter((d) => d.status === "approved")
-    .reduce((sum, d) => sum + d.amount, 0);
+    ?.filter((d) => d?.status === "approved")
+    ?.reduce((sum, d) => sum + d?.amount, 0);
 
   const [selectedPackage, setSelectedPackage] = useState<string>("");
 

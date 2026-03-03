@@ -7,7 +7,7 @@ import { ArrowRight, Zap, TrendingUp, Users, Wallet } from "lucide-react";
 import useDashboard from "./useDashboard";
 
 export default function LandingPage() {
-  const { packages , handleToChosePlan} = useDashboard();
+  const { accessToken, refreshToken, user } = useDashboard();
   const features = [
     {
       icon: Zap,
@@ -39,13 +39,12 @@ export default function LandingPage() {
     { label: "Collectors", value: "44K+" },
   ];
 
-  console.log("packages", packages)
   return (
     <>
       <Header />
       <main className="bg-background">
         {/* Hero Section */}
-        <section className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32 overflow-hidden">
+        <section className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-32 overflow-hidden">
           {/* 3D Animated Background */}
           <div className="absolute inset-0 w-full h-full -z-0">
             <AnimatedHero3D />
@@ -64,25 +63,27 @@ export default function LandingPage() {
               Deposit. Work. Withdraw. Grow your team and multiply your earnings
               through our dynamic investment packages.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/auth/signup">
-                <Button
-                  size="lg"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold px-8 shadow-lg shadow-primary/30"
-                >
-                  Get Started <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/auth/login">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="rounded-lg border-border hover:border-primary/50 bg-transparent font-semibold px-8"
-                >
-                  Sign In
-                </Button>
-              </Link>
-            </div>
+            {!(accessToken && refreshToken && user)&& (
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/auth/signup">
+                  <Button
+                    size="lg"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold px-8 shadow-lg shadow-primary/30"
+                  >
+                    Get Started <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link href="/auth/login">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="rounded-lg border-border hover:border-primary/50 bg-transparent font-semibold px-8"
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </section>
 
@@ -139,70 +140,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Investment Packages Preview */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
-              Investment Packages
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Choose a package that fits your investment goals
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            {/* {[
-              { name: "Starter", rate: "5%", min: "$50" },
-              { name: "Growth", rate: "8%", min: "$200" },
-              { name: "Pro", rate: "12%", min: "$500", featured: true },
-              { name: "Elite", rate: "15%", min: "$1000" },
-              { name: "VIP", rate: "20%", min: "$5000" },
-            ] */}
-
-            {packages?.map((pkg, index: number) => (
-              <div
-                key={index}
-                className={`relative p-6 rounded-xl border transition-all duration-300 ${
-                  pkg.featured
-                    ? "bg-card/70 border-primary/60 scale-105 shadow-lg shadow-primary/20"
-                    : "bg-card/30 border-border/40 hover:border-primary/50"
-                }`}
-              >
-                {pkg.featured && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full">
-                    Most Popular
-                  </div>
-                )}
-                <h3 className="font-bold text-lg mb-4 text-foreground">
-                  {pkg.name}
-                </h3>
-                <div className="mb-4">
-                  <div className="text-3xl font-bold text-primary mb-1">
-                    {pkg.credits} cre{" "}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Monthly Return
-                  </div>
-                </div>
-                <div className="text-sm text-muted-foreground mb-4">
-                  Min: {pkg.price}
-                </div>
-                <Button
-                  className={`w-full rounded-lg ${
-                    pkg.featured
-                      ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                      : "bg-transparent border-border hover:border-primary/50"
-                  }`}
-                  variant={pkg.featured ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => pkg?._id && handleToChosePlan(pkg._id)}
-                >
-                  Choose Plan
-                </Button>
-              </div>
-            ))}
-          </div>
-        </section>
+     
 
         {/* CTA Section */}
         <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
