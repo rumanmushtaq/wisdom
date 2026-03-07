@@ -30,6 +30,7 @@ const useHeader = () => {
   return {
     user,
     pathname,
+    router,
     handleToLogoutUser,
     mobileOpen,
     setMobileOpen,

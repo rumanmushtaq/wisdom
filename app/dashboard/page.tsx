@@ -62,7 +62,7 @@ export default function DashboardPage() {
     <>
       <Header />
       <main className="min-h-screen bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8">
           {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
@@ -124,7 +124,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Investment Packages Preview */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <section className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-24">
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
               Investment Packages

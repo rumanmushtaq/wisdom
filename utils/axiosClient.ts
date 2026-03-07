@@ -7,6 +7,8 @@ import axios, {
 
 import Cookies from "js-cookie";
 import apiEndpoints from "./apiConfig";
+import { store } from "@/store/store";
+import { logout } from "@/store/slices/auth";
 
 interface ErrorResponseData {
   message?: string; // Define the `message` property as optional
@@ -62,7 +64,9 @@ export const setupAxios = () => {
         if (status === 401) {
           // Unauthorized error: Redirect to login
           // toast.error("Session expired. Please log in again.");
-
+          Cookies.remove("access_token");
+          Cookies.remove("refresh_token");
+          store.dispatch(logout());
           console.log("Session expired. Please log in again.");
           window.location.href = "/auth/login";
         } else if (status >= 400 && status < 500) {

@@ -12,6 +12,7 @@ const useDeposit = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { packages } = useSelector((state: RootState) => state.packages);
   const { deposits } = useSelector((state: RootState) => state.deposit);
+  const { user } = useSelector((state: RootState) => state.auth);
 
 
   const handleDepositSubmit = async (data: any) => {
@@ -58,6 +59,8 @@ const useDeposit = () => {
     approvedTotal,
     deposits,
     handleDepositSubmit,
+    user,
+    
   };
 };
 

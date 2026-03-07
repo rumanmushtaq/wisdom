@@ -6,7 +6,7 @@ const Page = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="container py-8 px-4 max-w-4xl mx-auto">
+      <main className="w-full py-8 px-4 sm:px-6 lg:px-8 xl:px-12">
         <ProfileContent />
       </main>
     </div>

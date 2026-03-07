@@ -44,7 +44,7 @@ export default function LandingPage() {
       <Header />
       <main className="bg-background">
         {/* Hero Section */}
-        <section className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-32 overflow-hidden">
+        <section className="relative w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-16 sm:py-32 overflow-hidden">
           {/* 3D Animated Background */}
           <div className="absolute inset-0 w-full h-full -z-0">
             <AnimatedHero3D />
@@ -89,7 +89,7 @@ export default function LandingPage() {
 
         {/* Stats Section */}
         <section className="border-y border-border/40">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-16">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
               {stats.map((stat) => (
                 <div key={stat.label} className="text-center">
@@ -107,7 +107,7 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <section className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-24">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
               How It Works
@@ -143,7 +143,7 @@ export default function LandingPage() {
      
 
         {/* CTA Section */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+        <section className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-24 text-center">
           <div className="bg-card/50 border border-border/40 p-12 sm:p-16 rounded-xl">
             <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
               Ready to Start Earning?
@@ -165,7 +165,7 @@ export default function LandingPage() {
 
         {/* Footer */}
         <footer className="border-t border-border/40 bg-card/20 mt-20">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-12">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
               <div>
                 <h4 className="font-semibold mb-4 text-foreground">Product</h4>

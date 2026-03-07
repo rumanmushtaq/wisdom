@@ -99,7 +99,7 @@ export default function ReferralPage() {
     <>
       <Header />
       <main className="min-h-screen bg-gradient-to-b from-background to-muted/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">Referral Program</h1>
@@ -155,12 +155,12 @@ export default function ReferralPage() {
                   })}
                 </div>
 
-                <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                {/* <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg">
                   <p className="text-sm text-foreground/70">
                     <span className="font-medium">Commission Structure:</span> 10% of referral task earnings + bonus
                     rewards for team milestones
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

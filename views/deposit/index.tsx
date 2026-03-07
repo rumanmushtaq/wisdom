@@ -24,13 +24,15 @@ export default function Index() {
     approvedTotal,
     deposits,
     handleDepositSubmit,
+    user,
+
   } = useDeposit();
 
   return (
     <main className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 glass border-b border-border/30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
@@ -55,7 +57,7 @@ export default function Index() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8">
         {/* Page Title */}
         <div className="mb-8 animate-fade-in">
           <h2 className="text-3xl sm:text-4xl font-bold mb-2">
@@ -94,13 +96,19 @@ export default function Index() {
             {/* Info Cards */}
             <div className="grid grid-cols-2 gap-4">
               <div
-                className="glass p-6 rounded-xl border 
+                className={`glass p-6 rounded-xl border 
                 shadow-sm hover:shadow-md 
                 hover:border-primary 
-                transition-all duration-300"
+                transition-all duration-300 ${user?.isVerified ? "" : "justify-center items-center flex"}`}
               >
-                <div className="text-2xl font-bold text-primary mb-1">$10</div>
-                <p className="text-xs text-muted-foreground">Minimum Deposit</p>
+                {user?.isVerified ? (
+                  <>
+                    <div className="text-2xl font-bold text-primary mb-1">$10</div>
+                    <p className="text-xs text-muted-foreground">Minimum Deposit</p>
+                  </>
+                ) : (
+                  <div className="text-2xl font-bold text-primary">Choose Your Plan</div>
+                )}
               </div>
               <div
                 className="glass p-6 rounded-xl border 
@@ -162,7 +170,7 @@ export default function Index() {
           </div>
         </div>
 
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <section className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-12">
           <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">
               Investment Packages
@@ -176,11 +184,10 @@ export default function Index() {
             {packages?.map((pkg, index: number) => (
               <div
                 key={index}
-                className={`relative p-6 rounded-xl border transition-all duration-300 ${
-                  pkg?._id === selectedPackage
-                    ? "bg-card/70 border-primary/60 scale-105 shadow-lg shadow-primary/20"
-                    : "bg-card/30 border-border/40 hover:border-primary/50"
-                }`}
+                className={`relative p-6 rounded-xl border transition-all duration-300 ${pkg?._id === selectedPackage
+                  ? "bg-card/70 border-primary/60 scale-105 shadow-lg shadow-primary/20"
+                  : "bg-card/30 border-border/40 hover:border-primary/50"
+                  }`}
               >
                 {pkg?.featured && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full">
@@ -202,11 +209,10 @@ export default function Index() {
                   Min: {pkg?.price}
                 </div>
                 <Button
-                  className={`w-full rounded-lg ${
-                    pkg?.featured
-                      ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                      : "bg-transparent border-border hover:border-primary/50"
-                  }`}
+                  className={`w-full rounded-lg ${pkg?.featured
+                    ? "bg-primary hover:bg-primary/90 text-primary-foreground"
+                    : "bg-transparent border-border hover:border-primary/50"
+                    }`}
                   variant={pkg.featured ? "default" : "outline"}
                   size="sm"
                   onClick={() => pkg?._id && setSelectedPackage(pkg._id)}

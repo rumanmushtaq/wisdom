@@ -28,9 +28,6 @@ const useLogin = () => {
     try {
       const res = await authService.loginApi(data);
 
-      console.log("res", res)
-
-  
       if (res?.success) {
         // ✅ Save to cookies
         document.cookie = `access_token=${res?.access_token}; path=/; max-age=3600`; // 1 hour
@@ -50,10 +47,7 @@ const useLogin = () => {
       }
     } catch (err) {
       console.log("errors", err);
-      setError("root", {
-        type: "server",
-        message: "An error occurred. Please try again.",
-      });
+      toast.error((err as Error).message || "An error occurred. Please try again.");
     }
   };
 
