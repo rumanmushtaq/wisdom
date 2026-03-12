@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import packageService from "@/services/packages";
+import DashboardService from "@/services/dashboard";
 import { setPackages } from "@/store/slices/package";
+import { setDashboardStats, setLoading } from "@/store/slices/dashboard";
 import { AppDispatch, RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
 
@@ -10,6 +12,7 @@ const useDashboard = () => {
   const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
   const { packages } = useSelector((state: RootState) => state.packages);
+  const { stats, loading } = useSelector((state: RootState) => state.dashboard);
   const dispatch = useDispatch<AppDispatch>();
   const [loader, setLoader] = useState<{
     packages: boolean;
@@ -29,6 +32,15 @@ const useDashboard = () => {
     }
   };
 
+  const fetchDashboardStats = async () => {
+    dispatch(setLoading(true));
+    const response = await DashboardService.getDashboardStats();
+    if (response.success && typeof response.data === "object") {
+      dispatch(setDashboardStats(response.data));
+    }
+    dispatch(setLoading(false));
+  };
+
   const handleToChosePlan = (packageId: string) => {
     console.log("i am calling");
 
@@ -42,8 +54,9 @@ const useDashboard = () => {
 
   useEffect(() => {
     handleToGetAllPackages();
+    fetchDashboardStats();
   }, []);
-  return { user, packages, handleToChosePlan };
+  return { user, packages, stats, loading, handleToChosePlan };
 };
 
 export default useDashboard;

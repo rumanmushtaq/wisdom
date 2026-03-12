@@ -157,7 +157,7 @@ export default function WithdrawPage() {
                     <span className="font-medium block text-foreground mb-1">
                       Maximum:
                     </span>
-                    {availableBalance} USDT
+                    1000 USDT
                   </p>
                   <p>
                     <span className="font-medium block text-foreground mb-1">
@@ -169,17 +169,17 @@ export default function WithdrawPage() {
                     <span className="font-medium block text-foreground mb-1">
                       Processing Time:
                     </span>
-                    1-5 minutes
+                    48-72 hours
                   </p>
                 </div>
               </div>
 
-              <div className="glass p-4 rounded-xl bg-info/5 border border-info/20">
+              {/* <div className="glass p-4 rounded-xl bg-info/5 border border-info/20">
                 <p className="text-sm text-foreground/70">
                   Withdrawals are processed automatically. Check your wallet
                   within a few minutes.
                 </p>
-              </div>
+              </div> */}
             </div>
           </div>
 

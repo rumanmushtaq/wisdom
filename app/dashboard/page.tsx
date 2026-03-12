@@ -7,56 +7,19 @@ import { QuickActions } from "@/components/dashboard/quick-actions";
 import { Wallet, Zap, Users, ArrowDownLeft } from "lucide-react";
 import useDashboard from "./useDashboard";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardPage() {
-  // Mock data - replace with actual API calls
+  const { packages, user, stats, loading, handleToChosePlan } = useDashboard();
 
-  const { packages, user, handleToChosePlan } = useDashboard();
-
-  const mockBalance = {
-    total: 5234.67,
-    available: 3450.23,
-    locked: 1784.44,
-    tasksEarned: 2100.5,
-    referralsEarned: 1050.25,
-    totalWithdrawn: 1500,
-    totalDeposited: 3000,
-  };
-
-  const mockTeam = {
-    directReferrals: 12,
-    totalTeamSize: 45,
-    totalTeamEarnings: 3250.75,
-    recentMembers: [
-      {
-        id: "1",
-        username: "alex_trader",
-        avatar: "AT",
-        totalEarned: 450.25,
-        joinedDate: "2 days ago",
-      },
-      {
-        id: "2",
-        username: "crypto_fan",
-        avatar: "CF",
-        totalEarned: 320.5,
-        joinedDate: "5 days ago",
-      },
-      {
-        id: "3",
-        username: "earn_daily",
-        avatar: "ED",
-        totalEarned: 215.75,
-        joinedDate: "1 week ago",
-      },
-    ],
-  };
-
-  const mockTaskProgress = {
-    completed: 6,
-    total: 10,
-    dailyTarget: 5,
-  };
+  // Fallback to user credits if stats not loaded yet
+  const totalBalance = stats?.totalBalance ?? user?.credits ?? 0;
+  const taskEarnings = stats?.taskEarnings ?? 0;
+  const referralEarnings = stats?.referralEarnings ?? 0;
+  const totalWithdrawn = stats?.totalWithdrawn ?? 0;
+  const tasksCompleted = stats?.tasksCompleted ?? 0;
+  const tasksTotal = stats?.tasksTotal ?? 10;
+  const dailyTaskTarget = stats?.dailyTaskTarget ?? 5;
 
   return (
     <>
@@ -85,15 +48,15 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatCard
               label="Total Balance"
-              value={`${mockBalance.total.toFixed(2)}`}
-              subtext="Available: 3,450.23"
+              value={loading ? "..." : `${totalBalance.toFixed(2)}`}
+              // subtext="Available: 3,450.23"
               icon={<Wallet className="h-5 w-5" />}
               color="primary"
               trend={{ value: 12.5, isPositive: true }}
             />
             <StatCard
               label="Task Earnings"
-              value={`${mockBalance.tasksEarned.toFixed(2)}`}
+              value={loading ? "..." : `${taskEarnings.toFixed(2)}`}
               subtext="This week"
               icon={<Zap className="h-5 w-5" />}
               color="warning"
@@ -101,15 +64,15 @@ export default function DashboardPage() {
             />
             <StatCard
               label="Referral Income"
-              value={`${mockBalance.referralsEarned.toFixed(2)}`}
-              subtext="From 12 referrals"
+              value={loading ? "..." : `${referralEarnings.toFixed(2)}`}
+              subtext={`From ${stats?.directReferrals ?? 0} referrals`}
               icon={<Users className="h-5 w-5" />}
               color="info"
               trend={{ value: 8.3, isPositive: true }}
             />
             <StatCard
               label="Total Withdrawn"
-              value={`${mockBalance.totalWithdrawn.toFixed(2)}`}
+              value={loading ? "..." : `${totalWithdrawn.toFixed(2)}`}
               subtext="Lifetime"
               icon={<ArrowDownLeft className="h-5 w-5" />}
               color="success"
@@ -119,7 +82,11 @@ export default function DashboardPage() {
 
           {/* Task Progress */}
           <div className="grid grid-cols-1 gap-8 mb-8">
-            <TaskProgress {...mockTaskProgress} />
+            <TaskProgress 
+              completed={tasksCompleted} 
+              total={tasksTotal} 
+              dailyTarget={dailyTaskTarget} 
+            />
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -14,154 +15,111 @@ import {
   CheckCheck,
   Trash2,
 } from "lucide-react";
+import { AppDispatch, RootState } from "@/store/store";
+import {
+  setNotifications,
+  setUnreadCount,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+  deleteNotification as deleteNotificationAction,
+} from "@/store/slices/notifications";
+import NotificationsService from "@/services/notifications";
 
 interface Notification {
-  id: string;
+  _id: string;
+  userId: string;
   title: string;
   message: string;
-  type: "success" | "warning" | "info" | "error";
-  time: string;
-  read: boolean;
+  type: "WELCOME" | "TASK" | "DEPOSIT" | "WITHDRAWAL" | "REFERRAL" | "SYSTEM" | "SUCCESS" | "WARNING" | "INFO" | "ERROR";
+  priority: "LOW" | "MEDIUM" | "HIGH";
+  isRead: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
-// Mock notifications - replace with real data from your API/store
-const mockNotifications: Notification[] = [
-  {
-    id: "1",
-    title: "Task Completed",
-    message: "You have successfully completed 'Review Article' task and earned $2.50",
-    type: "success",
-    time: "2 min ago",
-    read: false,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    title: "Deposit Confirmed",
-    message: "Your deposit of $50.00 has been confirmed and added to your balance",
-    type: "success",
-    time: "1 hour ago",
-    read: false,
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-  },
-  {
-    id: "3",
-    title: "New Task Available",
-    message: "A new high-reward task 'Product Testing' is now available for you",
-    type: "info",
-    time: "3 hours ago",
-    read: true,
-    createdAt: new Date(Date.now() - 10800000).toISOString(),
-  },
-  {
-    id: "4",
-    title: "Withdrawal Processed",
-    message: "Your withdrawal of $25.00 has been processed successfully",
-    type: "success",
-    time: "5 hours ago",
-    read: true,
-    createdAt: new Date(Date.now() - 18000000).toISOString(),
-  },
-  {
-    id: "5",
-    title: "Referral Bonus",
-    message: "You earned $5.00 from your referral 'john_doe' signup",
-    type: "success",
-    time: "1 day ago",
-    read: true,
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id: "6",
-    title: "Account Security",
-    message: "Please verify your email address to secure your account",
-    type: "warning",
-    time: "2 days ago",
-    read: true,
-    createdAt: new Date(Date.now() - 172800000).toISOString(),
-  },
-  {
-    id: "7",
-    title: "Package Upgraded",
-    message: "Congratulations! Your package has been upgraded to Premium",
-    type: "success",
-    time: "3 days ago",
-    read: true,
-    createdAt: new Date(Date.now() - 259200000).toISOString(),
-  },
-  {
-    id: "8",
-    title: "Task Deadline",
-    message: "You have 2 pending tasks that expire in 24 hours",
-    type: "warning",
-    time: "4 days ago",
-    read: true,
-    createdAt: new Date(Date.now() - 345600000).toISOString(),
-  },
-  {
-    id: "9",
-    title: "Weekly Summary",
-    message: "Your weekly earnings: $45.50 from tasks, $10.00 from referrals",
-    type: "info",
-    time: "5 days ago",
-    read: true,
-    createdAt: new Date(Date.now() - 432000000).toISOString(),
-  },
-  {
-    id: "10",
-    title: "System Maintenance",
-    message: "Scheduled maintenance on March 10th from 2AM-4AM UTC",
-    type: "info",
-    time: "1 week ago",
-    read: true,
-    createdAt: new Date(Date.now() - 604800000).toISOString(),
-  },
-];
+function formatTimeAgo(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diffInSeconds < 60) return "just now";
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} min ago`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hour${Math.floor(diffInSeconds / 3600) > 1 ? "s" : ""} ago`;
+  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} day${Math.floor(diffInSeconds / 86400) > 1 ? "s" : ""} ago`;
+  return `${Math.floor(diffInSeconds / 604800)} week${Math.floor(diffInSeconds / 604800) > 1 ? "s" : ""} ago`;
+}
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const dispatch = useDispatch<AppDispatch>();
+  const { notifications, unreadCount } = useSelector((state: RootState) => state.notifications);
   const [filter, setFilter] = useState<"all" | "unread">("all");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
   const filteredNotifications =
     filter === "unread"
-      ? notifications.filter((n) => !n.read)
+      ? notifications.filter((n) => !n.isRead)
       : notifications;
 
-  const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const fetchNotifications = async () => {
+    setIsLoading(true);
+    const response = await NotificationsService.getAllNotifications();
+    if (response.success && typeof response.data === "object" && "data" in response.data) {
+      dispatch(setNotifications(response.data.data));
+      dispatch(setUnreadCount(response.data.unreadCount));
+    }
+    setIsLoading(false);
   };
 
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  const handleMarkAsRead = async (id: string) => {
+    const response = await NotificationsService.markAsRead(id);
+    if (response.success) {
+      dispatch(markNotificationAsRead(id));
+    }
   };
 
-  const deleteNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  const handleMarkAllAsRead = async () => {
+    const response = await NotificationsService.markAllAsRead();
+    if (response.success) {
+      dispatch(markAllNotificationsAsRead());
+    }
   };
 
-  const clearAllRead = () => {
-    setNotifications((prev) => prev.filter((n) => !n.read));
+  const handleDeleteNotification = async (id: string) => {
+    const response = await NotificationsService.deleteNotification(id);
+    if (response.success) {
+      dispatch(deleteNotificationAction(id));
+    }
+  };
+
+  const handleClearAllRead = async () => {
+    const readNotifications = notifications.filter((n) => n.isRead);
+    for (const notification of readNotifications) {
+      await NotificationsService.deleteNotification(notification._id);
+      dispatch(deleteNotificationAction(notification._id));
+    }
   };
 
   const getNotificationIcon = (type: Notification["type"]) => {
     switch (type) {
-      case "success":
+      case "SUCCESS":
+      case "WELCOME":
+      case "REFERRAL":
         return (
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/20">
             <Check className="h-5 w-5 text-green-400" />
           </div>
         );
-      case "warning":
+      case "WARNING":
         return (
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500/20">
             <AlertTriangle className="h-5 w-5 text-yellow-400" />
           </div>
         );
-      case "error":
+      case "ERROR":
         return (
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/20">
             <XCircle className="h-5 w-5 text-red-400" />
@@ -199,18 +157,18 @@ export default function NotificationsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={markAllAsRead}
+                  onClick={handleMarkAllAsRead}
                   className="border-white/10 hover:border-primary"
                 >
                   <CheckCheck className="h-4 w-4 mr-2" />
                   Mark all read
                 </Button>
               )}
-              {notifications.some((n) => n.read) && (
+              {notifications.some((n) => n.isRead) && (
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={clearAllRead}
+                  onClick={handleClearAllRead}
                   className="border-white/10 hover:bg-red-500 text-red-400 hover:text-black"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
@@ -263,8 +221,8 @@ export default function NotificationsPage() {
                 <div className="divide-y divide-white/5">
                   {filteredNotifications.map((notification) => (
                     <div
-                      key={notification.id}
-                      className={`flex gap-4 px-6 py-4 hover:bg-white/5 transition-colors group ${!notification.read ? "bg-white/5" : ""
+                      key={notification._id}
+                      className={`flex gap-4 px-6 py-4 hover:bg-white/5 transition-colors group ${!notification.isRead ? "bg-white/5" : ""
                         }`}
                     >
                       {/* Icon */}
@@ -278,14 +236,14 @@ export default function NotificationsPage() {
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <h3
-                                className={`font-medium ${notification.read
+                                className={`font-medium ${notification.isRead
                                     ? "text-gray-400"
                                     : "text-white"
                                   }`}
                               >
                                 {notification.title}
                               </h3>
-                              {!notification.read && (
+                              {!notification.isRead && (
                                 <span className="w-2 h-2 bg-[#BFFF00] rounded-full flex-shrink-0" />
                               )}
                             </div>
@@ -293,18 +251,18 @@ export default function NotificationsPage() {
                               {notification.message}
                             </p>
                             <p className="text-xs text-gray-600 mt-2">
-                              {notification.time}
+                              {formatTimeAgo(notification.createdAt)}
                             </p>
                           </div>
 
                           {/* Actions */}
                           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {!notification.read && (
+                            {!notification.isRead && (
                               <Button
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8 hover:bg-white/10"
-                                onClick={() => markAsRead(notification.id)}
+                                onClick={() => handleMarkAsRead(notification._id)}
                                 title="Mark as read"
                               >
                                 <Check className="h-4 w-4 text-green-400" />
@@ -314,7 +272,7 @@ export default function NotificationsPage() {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 hover:bg-white/10"
-                              onClick={() => deleteNotification(notification.id)}
+                              onClick={() => handleDeleteNotification(notification._id)}
                               title="Delete"
                             >
                               <Trash2 className="h-4 w-4 text-red-400" />

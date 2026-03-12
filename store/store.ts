@@ -19,6 +19,8 @@ import tasksReducer from "./slices/tasks";
 import depositReducer from "./slices/deposit";
 import referralReducer from "./slices/referrals"
 import walletsReducer from "./slices/wallets";
+import notificationsReducer from "./slices/notifications";
+import dashboardReducer from "./slices/dashboard";
 /* ---------------------------------------------
    Root Reducer
 --------------------------------------------- */
@@ -28,7 +30,9 @@ const rootReducer = combineReducers({
   tasks: tasksReducer,
   deposit: depositReducer,
   referral : referralReducer,
-  wallets : walletsReducer
+  wallets : walletsReducer,
+  notifications: notificationsReducer,
+  dashboard: dashboardReducer,
   //   user: userReducer,
 });
 

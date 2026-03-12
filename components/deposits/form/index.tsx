@@ -75,7 +75,7 @@ export function DepositForm({ onSubmit }: DepositFormProps) {
               {...field}
               id="amount"
               type="number"
-              placeholder="Enter amount (min. $10)"
+              placeholder="Enter amount"
               className="h-12 bg-secondary/50 border-border/50 focus:border-primary"
             />
           )}

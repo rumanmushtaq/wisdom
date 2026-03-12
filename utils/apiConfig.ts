@@ -54,6 +54,14 @@ Wallets : {
 Withdraws : {
   MY : `/api/v1/withdrawals/my-withdrawals`,
   CREATE : `/api/v1/withdrawals`
+},
+Notifications: {
+  GET_ALL: `/api/v1/notifications`,
+  GET_UNREAD_COUNT: `/api/v1/notifications/unread-count`,
+  GET_BY_ID: (id: string) => `/api/v1/notifications/${id}`,
+  UPDATE: (id: string) => `/api/v1/notifications/${id}`,
+  DELETE: (id: string) => `/api/v1/notifications/${id}`,
+  MARK_ALL_READ: `/api/v1/notifications/mark-all-read`,
 }
 
 

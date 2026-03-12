@@ -114,10 +114,12 @@ export default function Index() {
                 className="glass p-6 rounded-xl border 
                 shadow-sm hover:shadow-md 
                 hover:border-primary 
-                transition-all duration-300"
+                transition-all duration-300 justify-center items-center flex"
               >
-                <div className="text-2xl font-bold text-accent mb-1">24h</div>
+                <div className="flex flex-col items-center">
+                <div className="text-2xl font-bold text-accent mb-1">24h approx. 48h</div>
                 <p className="text-xs text-muted-foreground">Processing Time</p>
+                </div>
               </div>
             </div>
 
@@ -139,7 +141,7 @@ export default function Index() {
                   "Open your Binance app and send USDT",
                   "Take a screenshot of the payment confirmation",
                   "Fill in the form and upload your proof",
-                  "Wait for admin approval (usually within 24h)",
+                  "Wait for admin approval (usually within 24h approx. 48h)",
                 ].map((step, index) => (
                   <li key={index} className="flex gap-3 items-start">
                     <span className="flex-shrink-0 w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold text-primary">

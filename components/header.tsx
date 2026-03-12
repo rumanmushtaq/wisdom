@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -12,70 +12,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Menu, X, Wallet, Bell, Check, XCircle } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
 import useHeader from "@/hooks/useHeader";
+import {
+  setNotifications,
+  setUnreadCount,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+} from "@/store/slices/notifications";
+import NotificationsService from "@/services/notifications";
 
-// Mock notifications - replace with real data from your API/store
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  type: "success" | "warning" | "info" | "error";
-  time: string;
-  read: boolean;
+function formatTimeAgo(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diffInSeconds < 60) return "just now";
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} min ago`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hour${Math.floor(diffInSeconds / 3600) > 1 ? "s" : ""} ago`;
+  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} day${Math.floor(diffInSeconds / 86400) > 1 ? "s" : ""} ago`;
+  return `${Math.floor(diffInSeconds / 604800)} week${Math.floor(diffInSeconds / 604800) > 1 ? "s" : ""} ago`;
 }
-
-const mockNotifications: Notification[] = [
-  {
-    id: "1",
-    title: "Task Completed",
-    message: "You have successfully completed 'Review Article' task",
-    type: "success",
-    time: "2 min ago",
-    read: false,
-  },
-  {
-    id: "2",
-    title: "Deposit Confirmed",
-    message: "Your deposit of $50.00 has been confirmed",
-    type: "success",
-    time: "1 hour ago",
-    read: false,
-  },
-  {
-    id: "3",
-    title: "New Task Available",
-    message: "A new high-reward task is now available for you",
-    type: "info",
-    time: "3 hours ago",
-    read: true,
-  },
-  {
-    id: "4",
-    title: "Withdrawal Processed",
-    message: "Your withdrawal of $25.00 has been processed",
-    type: "success",
-    time: "5 hours ago",
-    read: true,
-  },
-  {
-    id: "5",
-    title: "Referral Bonus",
-    message: "You earned $5.00 from your referral signup",
-    type: "success",
-    time: "1 day ago",
-    read: true,
-  },
-  {
-    id: "6",
-    title: "Account Security",
-    message: "Please verify your email address",
-    type: "warning",
-    time: "2 days ago",
-    read: true,
-  },
-];
 
 export function Header() {
   const {
@@ -88,26 +46,46 @@ export function Header() {
     handleToMoveProfile,
   } = useHeader();
 
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const dispatch = useDispatch<AppDispatch>();
+  const { notifications, unreadCount } = useSelector((state: RootState) => state.notifications);
 
-  const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+  useEffect(() => {
+    if (user?.firstName || user?.username) {
+      fetchNotifications();
+    }
+  }, [user]);
+
+  const fetchNotifications = async () => {
+    const response = await NotificationsService.getAllNotifications();
+    if (response.success && typeof response.data === "object" && "data" in response.data) {
+      dispatch(setNotifications(response.data.data));
+      dispatch(setUnreadCount(response.data.unreadCount));
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  const handleMarkAsRead = async (id: string) => {
+    const response = await NotificationsService.markAsRead(id);
+    if (response.success) {
+      dispatch(markNotificationAsRead(id));
+    }
   };
 
-  const getNotificationIcon = (type: Notification["type"]) => {
+  const handleMarkAllAsRead = async () => {
+    const response = await NotificationsService.markAllAsRead();
+    if (response.success) {
+      dispatch(markAllNotificationsAsRead());
+    }
+  };
+
+  const getNotificationIcon = (type: "WELCOME" | "TASK" | "DEPOSIT" | "WITHDRAWAL" | "REFERRAL" | "SYSTEM" | "SUCCESS" | "WARNING" | "INFO" | "ERROR") => {
     switch (type) {
-      case "success":
+      case "SUCCESS":
+      case "WELCOME":
+      case "REFERRAL":
         return <Check className="h-4 w-4 text-green-400" />;
-      case "warning":
+      case "WARNING":
         return <XCircle className="h-4 w-4 text-yellow-400" />;
-      case "error":
+      case "ERROR":
         return <XCircle className="h-4 w-4 text-red-400" />;
       default:
         return <Bell className="h-4 w-4 text-blue-400" />;
@@ -191,7 +169,7 @@ export function Header() {
                     <h3 className="font-semibold text-white">Notifications</h3>
                     {unreadCount > 0 && (
                       <button
-                        onClick={markAllAsRead}
+                        onClick={handleMarkAllAsRead}
                         className="text-xs text-[#BFFF00] hover:underline"
                       >
                         Mark all as read
@@ -208,9 +186,9 @@ export function Header() {
                       <div className="divide-y divide-white/5">
                         {notifications.map((notification) => (
                           <div
-                            key={notification.id}
-                            onClick={() => markAsRead(notification.id)}
-                            className={`flex gap-3 px-4 py-3 cursor-pointer hover:bg-white/5 transition-colors ${!notification.read ? "bg-white/5" : ""
+                            key={notification._id}
+                            onClick={() => handleMarkAsRead(notification._id)}
+                            className={`flex gap-3 px-4 py-3 cursor-pointer hover:bg-white/5 transition-colors ${!notification.isRead ? "bg-white/5" : ""
                               }`}
                           >
                             <div className="flex-shrink-0 mt-0.5">
@@ -219,12 +197,12 @@ export function Header() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
                                 <p
-                                  className={`text-sm font-medium ${notification.read ? "text-gray-400" : "text-white"
+                                  className={`text-sm font-medium ${notification.isRead ? "text-gray-400" : "text-white"
                                     }`}
                                 >
                                   {notification.title}
                                 </p>
-                                {!notification.read && (
+                                {!notification.isRead && (
                                   <span className="w-2 h-2 bg-[#BFFF00] rounded-full" />
                                 )}
                               </div>
@@ -232,7 +210,7 @@ export function Header() {
                                 {notification.message}
                               </p>
                               <p className="text-xs text-gray-600 mt-1">
-                                {notification.time}
+                                {formatTimeAgo(notification.createdAt)}
                               </p>
                             </div>
                           </div>
@@ -290,18 +268,7 @@ export function Header() {
                   >
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => router.push("/wallets")}
-                    className="text-gray-300 hover:text-white hover:bg-white/5"
-                  >
-                    Wallets
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => router.push("/notifications")}
-                    className="text-gray-300 hover:text-white hover:bg-white/5"
-                  >
-                    Notifications
-                  </DropdownMenuItem>
+                
                   <DropdownMenuItem
                     onClick={handleToLogoutUser}
                     className="text-red-400 hover:text-red-300 hover:bg-white/5"

@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 const useSignup = () => {
   const dispatch = useDispatch<AppDispatch>();
- 
+
   const searchParams = useSearchParams();
   const referralCode = searchParams.get("ref") ?? undefined;
   const [showPassword, setShowPassword] = useState<{
@@ -68,9 +68,8 @@ const useSignup = () => {
 
       if (res?.data?.success) {
         document.cookie = `access_token=${res?.data?.access_token}; path=/; max-age=3600`; // 1 hour
-        document.cookie = `refresh_token=${
-          res?.data?.refresh_token
-        }; path=/; max-age=${7 * 24 * 60 * 60}`; // 7 days
+        document.cookie = `refresh_token=${res?.data?.refresh_token
+          }; path=/; max-age=${7 * 24 * 60 * 60}`; // 7 days
 
         dispatch(
           loginSuccess({
@@ -79,14 +78,18 @@ const useSignup = () => {
           }),
         );
         dispatch(setUser({ user: res?.data?.user }));
+        toast.success(
+          res?.data?.message ||
+          res?.message
+        );
         window.location.href = "/dashboard";
       }
     } catch (error: any) {
       console.log("err", error);
       toast.error(
         error?.response?.data?.message ||
-          error?.message ||
-          "Something went wrong"
+        error?.message ||
+        "Something went wrong"
       );
     }
   };
