@@ -17,25 +17,6 @@ interface WithdrawalHistory {
   txId?: string;
 }
 
-// Mock data
-const mockWithdrawalHistory: WithdrawalHistory[] = [
-  {
-    id: "1",
-    amount: 200,
-    date: "2025-11-09",
-    status: "completed",
-    address: "0xabcd...ef01",
-    txId: "0x1111...2222",
-  },
-  {
-    id: "2",
-    amount: 150,
-    date: "2025-11-06",
-    status: "completed",
-    address: "0xefgh...ij23",
-    txId: "0x3333...4444",
-  },
-];
 
 const mockSavedAddresses = [
   {
@@ -51,7 +32,7 @@ const mockSavedAddresses = [
 ];
 
 export default function WithdrawPage() {
-  const {user, usersWallets, isSubmitting, setIsSubmitting} = useWithdraws()
+  const { user, usersWallets, isSubmitting, setIsSubmitting, usersWithdraws } = useWithdraws()
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [selectedAddress, setSelectedAddress] = useState(
     mockSavedAddresses[0].id,
@@ -67,8 +48,8 @@ export default function WithdrawPage() {
     : "0";
   const netAmount = withdrawAmount
     ? (
-        Number.parseFloat(withdrawAmount) - Number.parseFloat(withdrawalFee)
-      ).toFixed(2)
+      Number.parseFloat(withdrawAmount) - Number.parseFloat(withdrawalFee)
+    ).toFixed(2)
     : "0";
 
   const handleWithdraw = async () => {
@@ -139,7 +120,7 @@ export default function WithdrawPage() {
           {/* Withdrawal Form */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             <div className="lg:col-span-2">
-             <WithdrawsForm user={user} usersWallets={usersWallets}/>
+              <WithdrawsForm user={user} usersWallets={usersWallets} />
             </div>
 
             {/* Info Sidebar */}
@@ -151,7 +132,7 @@ export default function WithdrawPage() {
                     <span className="font-medium block text-foreground mb-1">
                       Minimum:
                     </span>
-                    $10 USDT
+                    $100 USDT
                   </p>
                   <p>
                     <span className="font-medium block text-foreground mb-1">
@@ -163,7 +144,7 @@ export default function WithdrawPage() {
                     <span className="font-medium block text-foreground mb-1">
                       Network Fee:
                     </span>
-                    1% of amount
+                    9.5% of amount
                   </p>
                   <p>
                     <span className="font-medium block text-foreground mb-1">
@@ -208,7 +189,7 @@ export default function WithdrawPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {mockWithdrawalHistory.map((withdrawal) => (
+                  {usersWithdraws?.map((withdrawal) => (
                     <tr
                       key={withdrawal.id}
                       className="border-b border-border/10 hover:bg-card/30 transition-colors"

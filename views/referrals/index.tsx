@@ -92,9 +92,9 @@ const getTierColor = (tier: string) => {
 
 export default function ReferralPage() {
 
-  const {referralList, user, referralLink, tiers, loading} = useReferrals()
+  const {referralList, user, referralLink, tiers, loading, settings} = useReferrals()
 
-
+  console.log("referralList", referralList)
   return (
     <>
       <Header />
@@ -137,7 +137,7 @@ export default function ReferralPage() {
                     {
                       icon: Award,
                       title: "Earn Commissions",
-                      description: "You earn 10% commission on all task earnings from your referrals.",
+                      description: `You earn ${settings?.websiteCommission}% commission on all task earnings from your referrals.`,
                     },
                   ].map((item, index) => {
                     const Icon = item.icon
@@ -207,7 +207,7 @@ export default function ReferralPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {mockReferredUsers.map((user) => (
+                  {referralList?.map((user) => (
                     <tr key={user.id} className="border-b border-border/10 hover:bg-card/30 transition-colors">
                       <td className="py-3 px-4 font-medium">{user.username}</td>
                       <td className="py-3 px-4 text-foreground/70">{user.dateJoined}</td>
@@ -242,18 +242,18 @@ export default function ReferralPage() {
                   </div>
                 ))}
               </div>
-            ) : tiers.length > 0 ? (
+            ) : tiers?.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {tiers?.map((tier) => (
                   <div key={tier._id} className="p-4 border border-border/20 rounded-lg hover:border-primary transition-colors ease-in-out">
                     <p className="font-semibold mb-2">{tier.name}</p>
                     <p className="text-sm text-foreground/60 mb-2">
                       <span className="block">
-                        Members: {tier.minMembers}{tier.maxMembers ? `-${tier.maxMembers}` : '+'}
+                        Members: {tier?.minReferralCount}
                       </span>
                     </p>
-                    <p className="text-lg font-bold text-primary">{tier.commissionRate}%</p>
-                    <p className="text-xs text-foreground/50 mt-1">Commission Rate</p>
+                    <p className="text-lg font-bold text-primary">{tier?.invitePercentage}%</p>
+                    <p className="text-xs text-foreground/50 mt-1">Invite Commission Rate</p>
                   </div>
                 ))}
               </div>

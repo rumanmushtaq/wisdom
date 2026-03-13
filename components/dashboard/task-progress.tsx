@@ -28,7 +28,7 @@ export function TaskProgress({ completed, total, dailyTarget }: TaskProgressProp
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 text-sm">
+      <div className="flex justify-between text-sm">
         <div>
           <p className="text-foreground/60 mb-1">Daily Target</p>
           <p className="text-lg font-bold text-primary">{dailyTarget}</p>

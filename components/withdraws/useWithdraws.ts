@@ -1,11 +1,9 @@
-import React from "react";
+"use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import walletService from "@/services/withdraws";
-type WithdrawFormValues = {
-  amount: number;
-  addressId: string;
-};
+import { WithdrawFormValues, withdrawSchema } from "@/schemas/withdraw";
 
 const useWithdraws = () => {
   const {
@@ -15,6 +13,7 @@ const useWithdraws = () => {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<WithdrawFormValues>({
+    resolver: zodResolver(withdrawSchema),
     defaultValues: {
       amount: 0,
       addressId: "",
@@ -22,9 +21,8 @@ const useWithdraws = () => {
   });
 
   const amount = watch("amount");
-
-  const withdrawalFee = amount ? (amount * 0.01).toFixed(2) : "0.00";
-  const netAmount = amount ? (amount - amount * 0.01).toFixed(2) : "0.00";
+  const withdrawalFee = amount ? (amount * 0.095).toFixed(2) : "0.00";
+  const netAmount = amount ? (amount - amount * 0.095).toFixed(2) : "0.00";
 
   const handleWithdraw = async (data: WithdrawFormValues) => {
     try {

@@ -4,8 +4,7 @@ import { HTTP_CLIENT } from "@/utils/axiosClient";
 class ReferralService {
   async getUserReferrals(): Promise<any> {
     try {
-        console.log("4")
-       const {data} = await HTTP_CLIENT.get(`${apiEndpoints.REFERRAL.ALL}`);
+       const {data} = await HTTP_CLIENT.get(`${apiEndpoints.REFERRAL.MY}`);
       return data;
     } catch (error: any) {
       return error.message;

@@ -5,15 +5,26 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import depositService from "@/services/deposit";
 import { addDepositToTop, setDeposits } from "@/store/slices/deposit";
+import { useRouter } from "next/navigation";
+import usePackage from "@/hooks/use-package";
 
 
 
 const useDeposit = () => {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { packages } = useSelector((state: RootState) => state.packages);
   const { deposits } = useSelector((state: RootState) => state.deposit);
-  const { user } = useSelector((state: RootState) => state.auth);
 
+  
+  const { user } = useSelector((state: RootState) => state.auth);
+  const [selectedPackage, setSelectedPackage] = useState<string>("");
+    const [loader, setLoader] = useState<{
+    packages: boolean;
+  }>({
+    packages: false,
+  });
+  const { handleToGetAllPackages } = usePackage({ setLoader });
 
   const handleDepositSubmit = async (data: any) => {
     const payload = {
@@ -26,12 +37,12 @@ const useDeposit = () => {
       const result = await depositService.createTransaction(payload);
       console.log("result", result);
       dispatch(addDepositToTop(result?.data));
-    } catch (error) {}
+    } catch (error) { }
 
 
-     toast.success(
-       "Your deposit is pending admin approval."
-      );
+    toast.success(
+      "Your deposit is pending admin approval."
+    );
   };
 
   const pendingCount = deposits?.filter((d) => d?.status === "pending")?.length;
@@ -39,28 +50,41 @@ const useDeposit = () => {
     ?.filter((d) => d?.status === "approved")
     ?.reduce((sum, d) => sum + d?.amount, 0);
 
-  const [selectedPackage, setSelectedPackage] = useState<string>("");
 
   const handleTogetUserDeposit = async () => {
     try {
       const { data } = await depositService.getUserTransactions();
       dispatch(setDeposits(data));
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
+    handleToGetAllPackages()
     handleTogetUserDeposit();
   }, []);
+
+  const handleToChosePlan = (packageId: string) => {
+
+    if (!user) {
+      router.push("/auth/signup");
+      return;
+    } else {
+      setSelectedPackage(packageId)
+      router.push(`/deposit?id=${packageId}`);
+    }
+  };
+
   return {
     packages,
     selectedPackage,
-    setSelectedPackage,
     pendingCount,
     approvedTotal,
     deposits,
     handleDepositSubmit,
     user,
-    
+    handleToChosePlan,
+    loader,
+
   };
 };
 

@@ -45,7 +45,8 @@ const apiEndpoints = {
     START: `/api/v1/tasks/start`
   },
 REFERRAL : {
-  ALL: `/api/v1/users/referrals`
+  ALL: `/api/v1/users/referrals`,
+  MY: `/api/v1/referral/my-referrals`
 },
 Tiers : {
   ALL: `/api/v1/tiers`
@@ -65,7 +66,12 @@ Notifications: {
   UPDATE: (id: string) => `/api/v1/notifications/${id}`,
   DELETE: (id: string) => `/api/v1/notifications/${id}`,
   MARK_ALL_READ: `/api/v1/notifications/mark-all-read`,
-}
+},
+Settings: {
+  GET_ALL: `/api/v1/settings`,
+  GET_BY_ID: (id: string) => `/api/v1/settings/${id}`,
+  UPDATE: (id: string) => `/api/v1/settings/${id}`,
+},
 
 
 

@@ -22,7 +22,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import WalletService from "@/services/withdraws";
+import WalletService from "@/services/wallet";
+import WithdrawService from "@/services/withdraws";
 
 interface WalletItem {
   _id?: string;
@@ -52,7 +53,7 @@ export default function WalletsPage() {
     const fetchWallets = async () => {
       try {
         setIsLoading(true);
-        const response = await WalletService.getAllWallets();
+        const response = await WithdrawService.getMyWithdraws();
         if (response?.data) {
           setWallets(response.data);
         } else if (Array.isArray(response)) {
@@ -106,7 +107,7 @@ export default function WalletsPage() {
     }
 
     try {
-      const response = await WalletService.createWallets({
+      const response = await WithdrawService.createWithdraws({
         name: formData.name,
         address: formData.address,
       });

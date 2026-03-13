@@ -1,12 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import packageService from "@/services/packages";
+import settingService from "@/services/setting";
 import DashboardService from "@/services/dashboard";
-import { setPackages } from "@/store/slices/package";
 import { setDashboardStats, setLoading } from "@/store/slices/dashboard";
 import { AppDispatch, RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
+import usePackage from "@/hooks/use-package";
+import { setSettings } from "@/store/slices/setting";
+
 
 const useDashboard = () => {
   const router = useRouter();
@@ -20,17 +22,7 @@ const useDashboard = () => {
     packages: false,
   });
 
-  const handleToGetAllPackages = async () => {
-    setLoader((prev) => ({ ...prev, packages: true }));
-    try {
-      const { data } = await packageService.getAllPackages({});
-      dispatch(setPackages(data?.data));
-    } catch (error) {
-      console.log("error:::::", error);
-    } finally {
-      setLoader((prev) => ({ ...prev, packages: false }));
-    }
-  };
+  const { handleToGetAllPackages } = usePackage({ setLoader });
 
   const fetchDashboardStats = async () => {
     dispatch(setLoading(true));
@@ -42,8 +34,6 @@ const useDashboard = () => {
   };
 
   const handleToChosePlan = (packageId: string) => {
-    console.log("i am calling");
-
     if (!user) {
       router.push("/auth/signup");
       return;
@@ -52,7 +42,16 @@ const useDashboard = () => {
     }
   };
 
+  const handleToGetAllSettings = async () => {
+    const {data} = await settingService.getSettings();
+    if (data?.success) {
+     dispatch(setSettings(data?.data))
+    }
+  };
+
+
   useEffect(() => {
+    handleToGetAllSettings()
     handleToGetAllPackages();
     fetchDashboardStats();
   }, []);

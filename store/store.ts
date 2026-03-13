@@ -22,6 +22,8 @@ import walletsReducer from "./slices/wallets";
 import notificationsReducer from "./slices/notifications";
 import dashboardReducer from "./slices/dashboard";
 import tiersReducer from "./slices/tiers";
+import withdrawsReducer from "./slices/withdraws";
+import settingsReducer from "./slices/setting";
 /* ---------------------------------------------
    Root Reducer
 --------------------------------------------- */
@@ -35,6 +37,8 @@ const rootReducer = combineReducers({
   notifications: notificationsReducer,
   dashboard: dashboardReducer,
   tiers: tiersReducer,
+  withdraws: withdrawsReducer,
+  settings: settingsReducer,
   //   user: userReducer,
 });
 
@@ -45,7 +49,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ["auth"], // only persist auth (recommended)
+  whitelist: ["auth", "packages", "tasks", "deposit", "referral", "wallets", "notifications", "dashboard", "tiers", "withdraws"], // persist all data
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

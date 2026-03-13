@@ -4,9 +4,9 @@ import { HTTP_CLIENT } from "@/utils/axiosClient";
 export interface Tier {
   _id: string;
   name: string;
-  minMembers: number;
-  maxMembers?: number;
-  commissionRate: number;
+  minReferralCount: number;
+  maxReferralCount?: number;
+  invitePercentage: number;
   description?: string;
 }
 

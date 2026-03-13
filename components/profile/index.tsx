@@ -166,7 +166,7 @@ export function ProfileContent() {
               onClick={() => setShowPasswordDialog(true)}
             >
               <Lock className="h-4 w-4 mr-2" />
-              Change Password
+              Update Password
             </Button>
           </div>
         </CardContent>

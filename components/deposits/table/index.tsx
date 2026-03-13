@@ -92,7 +92,7 @@ export function DepositsTable({ deposits }: DepositsTableProps) {
               Amount
             </TableHead>
             <TableHead className="text-muted-foreground font-semibold">
-              Transaction ID
+              Transaction TXID
             </TableHead>
             <TableHead className="text-muted-foreground font-semibold">
               Proof

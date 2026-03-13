@@ -88,7 +88,7 @@ export function DepositForm({ onSubmit }: DepositFormProps) {
       {/* Transaction ID Field */}
       <div className="space-y-2">
         <Label htmlFor="transactionId" className="text-sm font-medium">
-          Binance Transaction ID
+          Binance Transaction TXID
         </Label>
         <Controller
           name="transactionId"
@@ -97,7 +97,7 @@ export function DepositForm({ onSubmit }: DepositFormProps) {
             <Input
               {...field}
               id="transactionId"
-              placeholder="Enter your Binance transaction ID"
+              placeholder="Enter your Binance transaction TXID"
               className="h-12 bg-secondary/50 border-border/50 focus:border-primary font-mono"
             />
           )}

@@ -8,22 +8,21 @@ import TiersService from "@/services/tiers";
 
 const useReferrals = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { referralList, user, tiers, loading } = useSelector((state: RootState) => ({
+  const { referralList, user, tiers, loading , settings} = useSelector((state: RootState) => ({
     referralList: state.referral.referralList,
     user: state.auth.user,
     tiers: state.tiers.tiers,
     loading: state.tiers.loading,
+    settings: state.settings.settings
   }));
+ 
   const [referralLink] = useState<string>(
     `${process.env.NEXT_PUBLIC_FRONTEND_URL}/auth/signup?ref=${user.referralCode}`,
   );
 
   const handleToGetReferralsOfThisUser = async () => {
-     console.log("2")
     try {
-        console.log("3")
       const { data } = await referralService.getUserReferrals();
-      console.log("data", data);
       dispatch(setReferrals(data));
     } catch (error) {
       console.log("error ", error);
@@ -40,12 +39,11 @@ const useReferrals = () => {
   };
 
   useEffect(() => {
-    console.log("1")
     handleToGetReferralsOfThisUser();
     fetchTiers();
   }, []);
 
-  return { referralList, user, referralLink, tiers, loading };
+  return { referralList, user, referralLink, tiers, loading, settings };
 };
 
 export default useReferrals;
