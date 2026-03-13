@@ -47,6 +47,9 @@ const apiEndpoints = {
 REFERRAL : {
   ALL: `/api/v1/users/referrals`
 },
+Tiers : {
+  ALL: `/api/v1/tiers`
+},
 
 Wallets : {
   ALL : `/api/v1/wallets`

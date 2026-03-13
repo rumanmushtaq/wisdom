@@ -18,7 +18,7 @@ export function StatCard({ label, value, subtext, icon, trend, color = "primary"
 
   return (
     <div className="glass p-6 rounded-xl">
-      <div className="flex items-start justify-between mb-4">
+      <div className="flex items-start justify-between">
         <div>
           <p className="text-foreground/60 text-sm font-medium mb-1">{label}</p>
           <div className="text-2xl sm:text-3xl font-bold text-foreground">{value}</div>
@@ -28,13 +28,13 @@ export function StatCard({ label, value, subtext, icon, trend, color = "primary"
           <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${colorClasses[color]}`}>{icon}</div>
         )}
       </div>
-      {trend && (
+      {/* {trend && (
         <div
           className={`text-xs font-medium ${trend.isPositive ? "text-green-600 dark:text-green-400" : "text-destructive"}`}
         >
           {trend.isPositive ? "↑" : "↓"} {Math.abs(trend.value)}% from last week
         </div>
-      )}
+      )} */}
     </div>
   )
 }

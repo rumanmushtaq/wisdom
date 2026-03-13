@@ -19,7 +19,7 @@ export default function DashboardPage() {
   const totalWithdrawn = stats?.totalWithdrawn ?? 0;
   const tasksCompleted = stats?.tasksCompleted ?? 0;
   const tasksTotal = stats?.tasksTotal ?? 10;
-  const dailyTaskTarget = stats?.dailyTaskTarget ?? 5;
+  const dailyTaskTarget = stats?.dailyTaskTarget ?? 10;
 
   return (
     <>
@@ -91,7 +91,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Investment Packages Preview */}
-        <section className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-24">
+        <section className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
               Investment Packages
@@ -105,7 +105,7 @@ export default function DashboardPage() {
             {packages?.map((pkg, index: number) => (
               <div
                 key={index}
-                className={`relative p-6 rounded-xl border transition-all duration-300 ${
+                className={`relative p-6 rounded-xl border transition-all duration-300 ease-in-out text-center ${
                   pkg.featured
                     ? "bg-card/70 border-primary/60 scale-105 shadow-lg shadow-primary/20"
                     : "bg-card/30 border-border/40 hover:border-primary/50"
@@ -121,14 +121,14 @@ export default function DashboardPage() {
                 </h3>
                 <div className="mb-4">
                   <div className="text-3xl font-bold text-primary mb-1">
-                    {pkg.credits} cre{" "}
+                    {pkg.credits} credits
                   </div>
                   <div className="text-sm text-muted-foreground">
                     Monthly Return
                   </div>
                 </div>
                 <div className="text-sm text-muted-foreground mb-4">
-                  Min: {pkg.price}
+                  Investment: ${pkg.price}
                 </div>
                 <Button
                   className={`w-full rounded-lg ${

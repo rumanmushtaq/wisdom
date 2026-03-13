@@ -92,7 +92,7 @@ const getTierColor = (tier: string) => {
 
 export default function ReferralPage() {
 
-  const {referralList, user, referralLink} = useReferrals()
+  const {referralList, user, referralLink, tiers, loading} = useReferrals()
 
 
   return (
@@ -227,29 +227,44 @@ export default function ReferralPage() {
             </div>
           </div>
 
-          {/* Tier System Info */}
+                    {/* Tier System Info */}
           <div className="mt-12 glass p-6 rounded-xl">
             <h2 className="text-xl font-semibold mb-6">Commission Tiers</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {[
-                { tier: "Bronze", members: "1-5", commission: "10%" },
-                { tier: "Silver", members: "6-15", commission: "12%" },
-                { tier: "Gold", members: "16-50", commission: "15%" },
-                { tier: "Platinum", members: "50+", commission: "20%" },
-              ].map((item) => (
-                <div key={item.tier} className="p-4 border border-border/20 rounded-lg">
-                  <p className="font-semibold mb-2">{item.tier}</p>
-                  <p className="text-sm text-foreground/60 mb-2">
-                    <span className="block">Members: {item.members}</span>
-                  </p>
-                  <p className="text-lg font-bold text-primary">{item.commission}</p>
-                  <p className="text-xs text-foreground/50 mt-1">Commission Rate</p>
-                </div>
-              ))}
-            </div>
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="p-4 border border-border/20 rounded-lg">
+                    <div className="animate-pulse space-y-3">
+                      <div className="h-4 bg-white/10 rounded w-1/2"></div>
+                      <div className="h-3 bg-white/10 rounded w-3/4"></div>
+                      <div className="h-6 bg-white/10 rounded w-1/3"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : tiers.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {tiers?.map((tier) => (
+                  <div key={tier._id} className="p-4 border border-border/20 rounded-lg hover:border-primary transition-colors ease-in-out">
+                    <p className="font-semibold mb-2">{tier.name}</p>
+                    <p className="text-sm text-foreground/60 mb-2">
+                      <span className="block">
+                        Members: {tier.minMembers}{tier.maxMembers ? `-${tier.maxMembers}` : '+'}
+                      </span>
+                    </p>
+                    <p className="text-lg font-bold text-primary">{tier.commissionRate}%</p>
+                    <p className="text-xs text-foreground/50 mt-1">Commission Rate</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-foreground/60">
+                No tiers available
+              </div>
+            )}
           </div>
         </div>
       </main>
     </>
-  )
+  );
 }

@@ -21,6 +21,7 @@ import referralReducer from "./slices/referrals"
 import walletsReducer from "./slices/wallets";
 import notificationsReducer from "./slices/notifications";
 import dashboardReducer from "./slices/dashboard";
+import tiersReducer from "./slices/tiers";
 /* ---------------------------------------------
    Root Reducer
 --------------------------------------------- */
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   wallets : walletsReducer,
   notifications: notificationsReducer,
   dashboard: dashboardReducer,
+  tiers: tiersReducer,
   //   user: userReducer,
 });
 

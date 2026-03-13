@@ -67,11 +67,7 @@ export function ReferralLinkDisplay({ referralCode, referralLink }: ReferralLink
         </div>
       </div>
 
-      <div className="glass p-4 rounded-xl bg-info/5 border border-info/20">
-        <p className="text-sm text-foreground/70">
-          Share your referral link with friends. Earn 10% commission on their task earnings.
-        </p>
-      </div>
+      
     </div>
   )
 }
