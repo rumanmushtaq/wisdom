@@ -32,7 +32,7 @@ const mockSavedAddresses = [
 ];
 
 export default function WithdrawPage() {
-  const { user, usersWallets, isSubmitting, setIsSubmitting, usersWithdraws } = useWithdraws()
+  const { user, usersWallets, isSubmitting, setIsSubmitting, usersWithdraws, settings } = useWithdraws()
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [selectedAddress, setSelectedAddress] = useState(
     mockSavedAddresses[0].id,
@@ -132,19 +132,19 @@ export default function WithdrawPage() {
                     <span className="font-medium block text-foreground mb-1">
                       Minimum:
                     </span>
-                    $100 USDT
+                    ${settings.minDeposit} USDT
                   </p>
                   <p>
                     <span className="font-medium block text-foreground mb-1">
                       Maximum:
                     </span>
-                    1000 USDT
+                    ${settings.maxDeposit} USDT
                   </p>
                   <p>
                     <span className="font-medium block text-foreground mb-1">
                       Network Fee:
                     </span>
-                    9.5% of amount
+                    {settings.handlingFee}% of amount
                   </p>
                   <p>
                     <span className="font-medium block text-foreground mb-1">
@@ -191,26 +191,26 @@ export default function WithdrawPage() {
                 <tbody>
                   {usersWithdraws?.map((withdrawal) => (
                     <tr
-                      key={withdrawal.id}
+                      key={withdrawal?._id}
                       className="border-b border-border/10 hover:bg-card/30 transition-colors"
                     >
-                      <td className="py-3 px-4">{withdrawal.date}</td>
+                      <td className="py-3 px-4">{withdrawal?.date}</td>
                       <td className="py-3 px-4 font-semibold">
-                        ${withdrawal.amount}
+                        ${withdrawal?.amount}
                       </td>
                       <td className="py-3 px-4 font-mono text-xs text-foreground/70">
-                        {withdrawal.address}
+                        {withdrawal?.address}
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          {getStatusIcon(withdrawal.status)}
+                          {getStatusIcon(withdrawal?.status)}
                           <span className="text-foreground/70">
-                            {getStatusLabel(withdrawal.status)}
+                            {getStatusLabel(withdrawal?.status)}
                           </span>
                         </div>
                       </td>
                       <td className="py-3 px-4 font-mono text-xs text-foreground/70">
-                        {withdrawal.txId || "-"}
+                        {withdrawal?.txId || "-"}
                       </td>
                     </tr>
                   ))}

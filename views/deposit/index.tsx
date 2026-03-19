@@ -6,7 +6,6 @@ import { WalletAddressDisplay } from "@/components/deposits/walletAddress";
 import useDeposit from "./useDeposit";
 import { Button } from "@/components/ui/button";
 import PackagesData from "@/components/dashboard/packages";
-const BINANCE_WALLET_ADDRESS = "TRC20:TYourBinanceWalletAddressHere1234567890";
 
 interface DepositFormProps {
   onSubmit: (data: {
@@ -26,10 +25,10 @@ export default function Index() {
     user,
     handleToChosePlan,
     loader,
-    settings
+    settings,
   } = useDeposit();
 
-  console.log("settings", settings)
+  console.log("settings", settings);
 
   return (
     <main className="min-h-screen bg-background">
@@ -93,7 +92,9 @@ export default function Index() {
                   </p>
                 </div>
               </div>
-              <WalletAddressDisplay address={BINANCE_WALLET_ADDRESS} />
+              <WalletAddressDisplay
+                address={settings?.adminId?.binanceAddressId?.address || "Loading..."}
+              />
             </div>
 
             {/* Info Cards */}
@@ -106,11 +107,17 @@ export default function Index() {
               >
                 {user?.isVerified ? (
                   <>
-                    <div className="text-2xl font-bold text-primary mb-1">$10</div>
-                    <p className="text-xs text-muted-foreground">Minimum Deposit</p>
+                    <div className="text-2xl font-bold text-primary mb-1">
+                      $10
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Minimum Deposit
+                    </p>
                   </>
                 ) : (
-                  <div className="text-2xl font-bold text-primary">Choose Your Plan</div>
+                  <div className="text-2xl font-bold text-primary">
+                    Choose Your Plan
+                  </div>
                 )}
               </div>
               <div
@@ -120,8 +127,12 @@ export default function Index() {
                 transition-all duration-300 justify-center items-center flex"
               >
                 <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold text-accent mb-1">24h approx. 48h</div>
-                  <p className="text-xs text-muted-foreground">Processing Time</p>
+                  <div className="text-2xl font-bold text-accent mb-1">
+                    24h approx. 48h
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Processing Time
+                  </p>
                 </div>
               </div>
             </div>
@@ -175,7 +186,10 @@ export default function Index() {
           </div>
         </div>
 
-        <PackagesData packages={packages} handleToChosePlan={handleToChosePlan} />
+        <PackagesData
+          packages={packages}
+          handleToChosePlan={handleToChosePlan}
+        />
 
         {/* Deposits Table */}
         <div className="animate-slide-up" style={{ animationDelay: "200ms" }}>

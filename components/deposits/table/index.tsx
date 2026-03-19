@@ -9,9 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Deposit } from "@/store/slices/deposit";
-
-
+import { Deposit } from "@/types/deposit";
 
 interface DepositsTableProps {
   deposits: Deposit[];

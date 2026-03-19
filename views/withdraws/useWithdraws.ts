@@ -10,9 +10,10 @@ import { setWithdraws } from "@/store/slices/withdraws";
 const useWithdraws = () => {
   const dispatch = useDispatch();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const { user, usersWallets, usersWithdraws } = useSelector((state: RootState) =>({user: state?.auth?.user,
+  const { user, usersWallets, usersWithdraws, settings } = useSelector((state: RootState) =>({user: state?.auth?.user,
     usersWallets : state?.wallets?.usersWallets,
     usersWithdraws : state?.withdraws?.usersWithdraws,
+    settings : state?.settings?.settings,
   }));
 
   const handleToGetAllWallets = async () => {
@@ -27,7 +28,7 @@ const useWithdraws = () => {
   useEffect(() => {
     handleToGetAllWallets();
   }, []);
-  return { user, usersWallets, isSubmitting, setIsSubmitting, usersWithdraws };
+  return { user, usersWallets, isSubmitting, setIsSubmitting, usersWithdraws, settings };
 };
 
 export default useWithdraws;

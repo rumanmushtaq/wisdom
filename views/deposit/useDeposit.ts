@@ -7,19 +7,21 @@ import depositService from "@/services/deposit";
 import { addDepositToTop, setDeposits } from "@/store/slices/deposit";
 import { useRouter } from "next/navigation";
 import usePackage from "@/hooks/use-package";
-
-
+import settingService from "@/services/setting";
+import { setSettings } from "@/store/slices/setting";
 
 const useDeposit = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { packages } = useSelector((state: RootState) => state.packages);
-  const { deposits } = useSelector((state: RootState) => state.deposit);
+  const { packages, deposits, settings, user } = useSelector((state: RootState) => ({
+    packages: state.packages.packages,
+    deposits: state.deposit.deposits,
+    settings: state.settings.settings,
+    user: state.auth.user,
+  }));
 
-  
-  const { user } = useSelector((state: RootState) => state.auth);
   const [selectedPackage, setSelectedPackage] = useState<string>("");
-    const [loader, setLoader] = useState<{
+  const [loader, setLoader] = useState<{
     packages: boolean;
   }>({
     packages: false,
@@ -37,12 +39,9 @@ const useDeposit = () => {
       const result = await depositService.createTransaction(payload);
       console.log("result", result);
       dispatch(addDepositToTop(result?.data));
-    } catch (error) { }
+    } catch (error) {}
 
-
-    toast.success(
-      "Your deposit is pending admin approval."
-    );
+    toast.success("Your deposit is pending admin approval.");
   };
 
   const pendingCount = deposits?.filter((d) => d?.status === "pending")?.length;
@@ -50,26 +49,34 @@ const useDeposit = () => {
     ?.filter((d) => d?.status === "approved")
     ?.reduce((sum, d) => sum + d?.amount, 0);
 
-
   const handleTogetUserDeposit = async () => {
     try {
       const { data } = await depositService.getUserTransactions();
       dispatch(setDeposits(data));
-    } catch (error) { }
+    } catch (error) {}
+  };
+
+  const handleToGetSettings = async () => {
+    try {
+      const res = await settingService.getSettings();
+      if (res?.success) {
+        dispatch(setSettings(res.data));
+      }
+    } catch (error) {}
   };
 
   useEffect(() => {
-    handleToGetAllPackages()
+    handleToGetAllPackages();
     handleTogetUserDeposit();
+    handleToGetSettings();
   }, []);
 
   const handleToChosePlan = (packageId: string) => {
-
     if (!user) {
       router.push("/auth/signup");
       return;
     } else {
-      setSelectedPackage(packageId)
+      setSelectedPackage(packageId);
       router.push(`/deposit?id=${packageId}`);
     }
   };
@@ -84,7 +91,7 @@ const useDeposit = () => {
     user,
     handleToChosePlan,
     loader,
-
+    settings,
   };
 };
 

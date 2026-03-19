@@ -1,24 +1,7 @@
+import { Deposit, DepositState } from "@/types/deposit";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface Deposit {
-  _id?: string;
-  amount: number;
-  balanceBefore: number;
-  image: string;
-  type: string;
-  transactionId: string;
-  updatedAt: string;
-  paymentProof: string;
-  status: "PENDING" | "APPROVED" | "REJECTED";
-  createdAt?: string;
-  userId : string
-}
-
-interface AuthState {
-  deposits: any[];
-}
-
-const initialState: AuthState = {
+const initialState: DepositState = {
   deposits: [],
 };
 

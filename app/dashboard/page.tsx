@@ -22,6 +22,11 @@ export default function DashboardPage() {
   const tasksTotal = stats?.tasksTotal ?? 10;
   const dailyTaskTarget = stats?.dailyTaskTarget ?? 10;
 
+  const displayName =
+    user?.firstName && user?.lastName
+      ? `${user.firstName.replace(/-/g, " ")} ${user.lastName.replace(/-/g, " ")}`
+      : user?.username?.replace(/-/g, " ");
+
   return (
     <>
       <Header />
@@ -30,10 +35,7 @@ export default function DashboardPage() {
           {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
-              Welcome back!{" "}
-              <span className="text-primary">
-                {user?.firstName} {user?.lastName}
-              </span>
+              Welcome back! <span className="text-primary">{displayName}</span>
             </h1>
             <p className="text-muted-foreground">
               Here's your earnings summary for today
@@ -83,16 +85,19 @@ export default function DashboardPage() {
 
           {/* Task Progress */}
           <div className="grid grid-cols-1 gap-8 mb-8">
-            <TaskProgress 
-              completed={tasksCompleted} 
-              total={tasksTotal} 
-              dailyTarget={dailyTaskTarget} 
+            <TaskProgress
+              completed={tasksCompleted}
+              total={tasksTotal}
+              dailyTarget={dailyTaskTarget}
             />
           </div>
         </div>
 
         {/* Investment Packages Preview */}
-        <PackagesData packages={packages} handleToChosePlan={handleToChosePlan} />
+        <PackagesData
+          packages={packages}
+          handleToChosePlan={handleToChosePlan}
+        />
       </main>
     </>
   );

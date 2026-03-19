@@ -1,14 +1,8 @@
+import { Tier } from "@/types/tier";
 import apiEndpoints from "@/utils/apiConfig";
 import { HTTP_CLIENT } from "@/utils/axiosClient";
 
-export interface Tier {
-  _id: string;
-  name: string;
-  minReferralCount: number;
-  maxReferralCount?: number;
-  invitePercentage: number;
-  description?: string;
-}
+
 
 class TiersService {
   async getAllTiers(): Promise<{ success: boolean; data: Tier[] | string }> {

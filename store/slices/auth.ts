@@ -1,29 +1,7 @@
 // src/store/slices/auth.slice.ts
+import { AuthState } from "@/types/auth";
+import { User } from "@/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-export interface User {
-  firstName: string;
-  lastName: string;
-  username: string;
-  createdAt?: string;
-  credits: number;
-  email: string;
-  isActive: boolean;
-  isVerified: boolean;
-  referralCode: string;
-  lastClaimedAt?: string;
-  role: string;
-  totalEarnings: number;
-  updatedAt: string;
-  _id?: string;
-}
-
-interface AuthState {
-  accessToken: string | null;
-  refreshToken: string | null;
-  isAuthenticated: boolean;
-  user: User;
-}
 
 const initialState: AuthState = {
   accessToken: null,
@@ -44,6 +22,7 @@ const initialState: AuthState = {
     totalEarnings: -1,
     updatedAt: "",
     _id: "",
+    tierId: undefined,
   },
 };
 

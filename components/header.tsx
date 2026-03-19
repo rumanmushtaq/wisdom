@@ -30,8 +30,10 @@ function formatTimeAgo(dateString: string): string {
 
   if (diffInSeconds < 60) return "just now";
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} min ago`;
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hour${Math.floor(diffInSeconds / 3600) > 1 ? "s" : ""} ago`;
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} day${Math.floor(diffInSeconds / 86400) > 1 ? "s" : ""} ago`;
+  if (diffInSeconds < 86400)
+    return `${Math.floor(diffInSeconds / 3600)} hour${Math.floor(diffInSeconds / 3600) > 1 ? "s" : ""} ago`;
+  if (diffInSeconds < 604800)
+    return `${Math.floor(diffInSeconds / 86400)} day${Math.floor(diffInSeconds / 86400) > 1 ? "s" : ""} ago`;
   return `${Math.floor(diffInSeconds / 604800)} week${Math.floor(diffInSeconds / 604800) > 1 ? "s" : ""} ago`;
 }
 
@@ -47,7 +49,9 @@ export function Header() {
   } = useHeader();
 
   const dispatch = useDispatch<AppDispatch>();
-  const { notifications, unreadCount } = useSelector((state: RootState) => state.notifications);
+  const { notifications, unreadCount } = useSelector(
+    (state: RootState) => state.notifications,
+  );
 
   useEffect(() => {
     if (user?.firstName || user?.username) {
@@ -57,7 +61,11 @@ export function Header() {
 
   const fetchNotifications = async () => {
     const response = await NotificationsService.getAllNotifications();
-    if (response.success && typeof response.data === "object" && "data" in response.data) {
+    if (
+      response.success &&
+      typeof response.data === "object" &&
+      "data" in response.data
+    ) {
       dispatch(setNotifications(response.data.data));
       dispatch(setUnreadCount(response.data.unreadCount));
     }
@@ -77,7 +85,19 @@ export function Header() {
     }
   };
 
-  const getNotificationIcon = (type: "WELCOME" | "TASK" | "DEPOSIT" | "WITHDRAWAL" | "REFERRAL" | "SYSTEM" | "SUCCESS" | "WARNING" | "INFO" | "ERROR") => {
+  const getNotificationIcon = (
+    type:
+      | "WELCOME"
+      | "TASK"
+      | "DEPOSIT"
+      | "WITHDRAWAL"
+      | "REFERRAL"
+      | "SYSTEM"
+      | "SUCCESS"
+      | "WARNING"
+      | "INFO"
+      | "ERROR",
+  ) => {
     switch (type) {
       case "SUCCESS":
       case "WELCOME":
@@ -100,7 +120,6 @@ export function Header() {
     { label: "Refer", href: "/refer" },
     { label: "Wallets", href: "/wallets" },
   ];
-
 
   return (
     <header className="sticky top-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-white/5">
@@ -125,10 +144,11 @@ export function Header() {
                     className="relative group"
                   >
                     <span
-                      className={`text-sm font-medium transition-colors ${isActive
+                      className={`text-sm font-medium transition-colors ${
+                        isActive
                           ? "text-[#BFFF00]"
                           : "text-gray-400 hover:text-gray-200"
-                        }`}
+                      }`}
                     >
                       {item.label}
                     </span>
@@ -143,8 +163,7 @@ export function Header() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
-
-               {/* Notification Bell */}
+            {/* Notification Bell */}
             {(user?.firstName || user?.username) && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -188,8 +207,9 @@ export function Header() {
                           <div
                             key={notification._id}
                             onClick={() => handleMarkAsRead(notification._id)}
-                            className={`flex gap-3 px-4 py-3 cursor-pointer hover:bg-white/5 transition-colors ${!notification.isRead ? "bg-white/5" : ""
-                              }`}
+                            className={`flex gap-3 px-4 py-3 cursor-pointer hover:bg-white/5 transition-colors ${
+                              !notification.isRead ? "bg-white/5" : ""
+                            }`}
                           >
                             <div className="flex-shrink-0 mt-0.5">
                               {getNotificationIcon(notification.type)}
@@ -197,8 +217,11 @@ export function Header() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
                                 <p
-                                  className={`text-sm font-medium ${notification.isRead ? "text-gray-400" : "text-white"
-                                    }`}
+                                  className={`text-sm font-medium ${
+                                    notification.isRead
+                                      ? "text-gray-400"
+                                      : "text-white"
+                                  }`}
                                 >
                                   {notification.title}
                                 </p>
@@ -233,13 +256,22 @@ export function Header() {
             )}
 
             {user?.credits >= 0 && (
-              <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#1a1a1a] border border-[#BFFF00]/20 rounded-lg">
-                <Wallet className="h-4 w-4 text-[#BFFF00]" />
-                <div>
-                  <p className="text-xs text-gray-500">Balance</p>
-                  <p className="text-sm font-semibold text-white">
-                    ${user?.credits?.toFixed(2)}
-                  </p>
+              <div className="flex items-center gap-3">
+                {user?.tierId && (
+                  <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-[#BFFF00]/10 border border-[#BFFF00]/30 rounded-full">
+                    <span className="text-[10px] font-bold text-[#BFFF00] uppercase tracking-wider">
+                      {user.tierId.name}
+                    </span>
+                  </div>
+                )}
+                <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#1a1a1a] border border-[#BFFF00]/20 rounded-lg">
+                  <Wallet className="h-4 w-4 text-[#BFFF00]" />
+                  <div>
+                    <p className="text-xs text-gray-500">Balance</p>
+                    <p className="text-sm font-semibold text-white">
+                      ${user?.credits?.toFixed(2)}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
@@ -254,7 +286,8 @@ export function Header() {
                     className="rounded-full hover:bg-white/5"
                   >
                     <div className="w-8 h-8 bg-[#BFFF00]/20 rounded-full flex items-center justify-center text-[#BFFF00] font-semibold">
-                      {(user?.firstName || user?.username)?.[0]?.toUpperCase() || "U"}
+                      {(user?.firstName ||
+                        user?.username)?.[0]?.toUpperCase() || "U"}
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
@@ -268,7 +301,7 @@ export function Header() {
                   >
                     Profile
                   </DropdownMenuItem>
-                
+
                   <DropdownMenuItem
                     onClick={handleToLogoutUser}
                     className="text-red-400 hover:text-red-300 hover:bg-white/5"
@@ -310,10 +343,11 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
+                  className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive
                       ? "text-[#BFFF00] bg-[#BFFF00]/10"
                       : "text-gray-400 hover:text-white hover:bg-white/5"
-                    }`}
+                  }`}
                   onClick={() => setMobileOpen(false)}
                 >
                   {item?.label}

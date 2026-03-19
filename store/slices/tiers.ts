@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Tier } from "@/services/tiers";
-
-interface TiersState {
-  tiers: Tier[];
-  loading: boolean;
-}
+import { Tier, TiersState } from "@/types/tier";
 
 const initialState: TiersState = {
   tiers: [],
