@@ -31,7 +31,7 @@ const Index = ({ packages, handleToChosePlan }: { packages: any; handleToChosePl
               {pkg.name}
             </h3>
             <div className="mb-4">
-              <div className="text-3xl font-bold text-primary mb-1">
+              <div className="text-xl font-bold text-primary mb-1">
                 {pkg.credits} credits
               </div>
               <div className="text-sm text-muted-foreground">

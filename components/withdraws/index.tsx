@@ -121,7 +121,7 @@ const Index = ({ user, usersWallets }: any) => {
               <span>${amount}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span>Network Fee (1%):</span>
+              <span>Network Fee ({withdrawalFee}%):</span>
               <span>-${withdrawalFee}</span>
             </div>
             <div className="border-t pt-2 flex justify-between text-sm">
