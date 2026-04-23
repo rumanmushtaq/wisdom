@@ -213,7 +213,7 @@ export default function WalletsPage() {
                     </Label>
                     <Input
                       id="name"
-                      placeholder="e.g., Main Wallet, Binance Wallet"
+                      placeholder="e.g., Main Wallet, Account Wallet"
                       value={formData.name}
                       onChange={(e) =>
                         setFormData((prev) => ({ ...prev, name: e.target.value }))

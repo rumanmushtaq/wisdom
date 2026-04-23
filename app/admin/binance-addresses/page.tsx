@@ -86,7 +86,7 @@ export default function AdminBinanceAddressesPage() {
     }
 
     if (!formData.address.trim()) {
-      newErrors.address = "Binance address is required";
+      newErrors.address = "Account address is required";
     } else if (formData.address.length < 10) {
       newErrors.address = "Please enter a valid wallet address";
     }
@@ -120,7 +120,7 @@ export default function AdminBinanceAddressesPage() {
 
     toast({
       title: "Address Added",
-      description: "Binance address has been added successfully.",
+      description: "Account address has been added successfully.",
     });
   };
 
@@ -193,7 +193,7 @@ export default function AdminBinanceAddressesPage() {
             <div>
               <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
                 <Landmark className="h-8 w-8 text-[#BFFF00]" />
-                Binance Addresses
+                Account Addresses
               </h1>
               <p className="text-muted-foreground mt-1">
                 Manage deposit addresses for users ({addresses.length} addresses)
@@ -249,7 +249,7 @@ export default function AdminBinanceAddressesPage() {
             <div className="flex flex-col items-center justify-center py-16 text-gray-500 bg-[#1a1a1a] border border-white/10 rounded-xl">
               <Building2 className="h-16 w-16 mb-4 opacity-30" />
               <p className="text-lg font-medium">No addresses yet</p>
-              <p className="text-sm mt-1">Add your first Binance deposit address</p>
+              <p className="text-sm mt-1">Add your first Account deposit address</p>
               <Button
                 onClick={() => setIsDialogOpen(true)}
                 className="mt-6 bg-[#BFFF00] text-black hover:bg-[#BFFF00]/90"
@@ -345,7 +345,7 @@ export default function AdminBinanceAddressesPage() {
               <ul className="space-y-2 text-sm text-gray-400">
                 <li className="flex items-start gap-2">
                   <span className="text-[#BFFF00]">1.</span>
-                  Add multiple Binance deposit addresses
+                  Add multiple Account deposit addresses
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#BFFF00]">2.</span>
@@ -386,7 +386,7 @@ export default function AdminBinanceAddressesPage() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="bg-[#1a1a1a] border-white/10">
           <DialogHeader>
-            <DialogTitle className="text-white">Add Binance Address</DialogTitle>
+            <DialogTitle className="text-white">Add Account Address</DialogTitle>
             <DialogDescription className="text-gray-400">
               Add a new deposit address for users. You can add multiple addresses and select one as active.
             </DialogDescription>
@@ -413,7 +413,7 @@ export default function AdminBinanceAddressesPage() {
 
             <div>
               <Label htmlFor="address" className="text-gray-300">
-                Binance Address
+                Account Address
               </Label>
               <Input
                 id="address"

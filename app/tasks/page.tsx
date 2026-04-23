@@ -5,6 +5,7 @@ import { Header } from "@/components/header";
 import { TaskCard } from "@/components/tasks/task-card";
 import { TaskFilter } from "@/components/tasks/task-filter";
 import { TaskModal } from "@/components/tasks/task-modal";
+import { TaskTimerOverlay } from "@/components/tasks/task-timer-overlay";
 import useTasks from "./useTasks";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,8 +24,14 @@ interface Task {
 }
 
 export default function TasksPage() {
-  const { myTasks, loader, timeLeft,user, handleTaskAction, handleToAddCreditsOfUser } =
-    useTasks();
+  const {
+    myTasks,
+    loader,
+    timeLeft,
+    user,
+    handleTaskAction,
+    handleToAddCreditsOfUser,
+  } = useTasks();
   const [filter, setFilter] = useState<TaskStatus>("all");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,20 +44,20 @@ export default function TasksPage() {
   const taskCounts = {
     all: myTasks?.length,
     PENDING: myTasks?.filter((t: any) => t.userStatus === "PENDING").length,
-    IN_PROGRESS: myTasks?.filter(
-      (t: any) => t.userStatus === "IN_PROGRESS"
-    ).length,
+    IN_PROGRESS: myTasks?.filter((t: any) => t.userStatus === "IN_PROGRESS")
+      .length,
     COMPLETED: myTasks?.filter((t: any) => t.userStatus === "COMPLETED").length,
   };
 
   const allTasksCompleted =
     myTasks?.length > 0 &&
     myTasks.every((task: any) => task.userStatus === "COMPLETED");
-  
+
   const canClaim =
-  allTasksCompleted &&
-  (!user.lastClaimedAt ||
-    new Date(user.lastClaimedAt).toDateString() !== new Date().toDateString());
+    allTasksCompleted &&
+    (!user.lastClaimedAt ||
+      new Date(user.lastClaimedAt).toDateString() !==
+        new Date().toDateString());
 
   const handleModalSubmit = async (taskId: string) => {
     // TODO: Submit task completion to API
@@ -60,6 +67,7 @@ export default function TasksPage() {
   return (
     <>
       <Header />
+      {loader.start.load && <TaskTimerOverlay timeLeft={timeLeft} />}
       <main className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-32">
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8">
           {/* Header */}

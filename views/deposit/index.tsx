@@ -45,15 +45,19 @@ export default function Index() {
                 <p className="text-xs text-muted-foreground">Secure Payments</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">   
+              {pendingCount> 0 && (
               <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-pending/10 text-pending text-sm">
                 <Clock className="w-4 h-4" />
                 <span>{pendingCount} pending</span>
               </div>
+              )}
+              {approvedTotal > 0 && (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-sm">
                 <DollarSign className="w-4 h-4" />
                 <span>${approvedTotal?.toLocaleString()}</span>
               </div>
+              )}
             </div>
           </div>
         </div>
@@ -66,7 +70,7 @@ export default function Index() {
             Make a <span className="text-gradient">Deposit</span>
           </h2>
           <p className="text-muted-foreground">
-            Send USDT to our Binance wallet and upload your payment proof for
+            Send USDT to our Account wallet and upload your payment proof for
             verification
           </p>
         </div>
@@ -86,7 +90,7 @@ export default function Index() {
                   <Wallet className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">Binance Wallet Address</h3>
+                  <h3 className="font-semibold">Account Wallet Address</h3>
                   <p className="text-xs text-muted-foreground">
                     Send USDT to this address
                   </p>
@@ -151,8 +155,8 @@ export default function Index() {
               </h3>
               <ol className="space-y-3">
                 {[
-                  "Copy the Binance wallet address above",
-                  "Open your Binance app and send USDT",
+                  "Copy the Account wallet address above",
+                  "Open your Account app and send USDT",
                   "Take a screenshot of the payment confirmation",
                   "Fill in the form and upload your proof",
                   "Wait for admin approval (usually within 24h approx. 48h)",

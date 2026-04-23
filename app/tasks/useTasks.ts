@@ -9,10 +9,10 @@ const useTasks = () => {
   const { myTasks, user } = useSelector((state: RootState) => {
     return {
       myTasks: state.tasks.myTasks,
-      user: state.auth.user
+      user: state.auth.user,
     };
   });
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(60);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [loader, setLoader] = useState<{
     data: boolean;
@@ -65,7 +65,7 @@ const useTasks = () => {
   // TIMER LOGIC
   // ============================
   const startTimer = (taskId: string) => {
-    setTimeLeft(30);
+    setTimeLeft(60);
     setLoader((prev) => ({
       ...prev,
       start: {
@@ -117,7 +117,8 @@ const useTasks = () => {
     };
   }, []);
   return {
-    loader,user,
+    loader,
+    user,
     myTasks,
     timeLeft,
     handleTaskAction,
