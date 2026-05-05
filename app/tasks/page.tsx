@@ -55,8 +55,8 @@ export default function TasksPage() {
 
   const canClaim =
     allTasksCompleted &&
-    (!user.lastClaimedAt ||
-      new Date(user.lastClaimedAt).toDateString() !==
+    (!user?.lastClaimedAt ||
+      new Date(user?.lastClaimedAt).toDateString() !==
         new Date().toDateString());
 
   const handleModalSubmit = async (taskId: string) => {

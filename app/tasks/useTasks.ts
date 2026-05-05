@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import tasksService from "@/services/tasks";
+import { setUser } from "@/store/slices/auth";
 const useTasks = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { myTasks, user } = useSelector((state: RootState) => {
@@ -99,11 +100,13 @@ const useTasks = () => {
   };
 
   const handleToAddCreditsOfUser = async () => {
-    console.log("asdcasd");
     try {
       const { data } = await tasksService.addCredits();
+      if (data.success) {
+        dispatch(setUser({ user: data.data }));
+      }
     } catch (error) {
-      console.log("adciasohcvlkasdncvioadsn4t");
+      console.error("error", error);
     }
   };
 
