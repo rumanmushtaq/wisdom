@@ -14,12 +14,11 @@ const Index = ({ user, usersWallets }: any) => {
     control,
     errors,
     setValue,
-    isSubmitting
+    isSubmitting,
   } = useWithdraws();
 
-  
   return (
-    <form onSubmit={handleSubmit(handleWithdraw)}>
+    <form onSubmit={handleSubmit(handleWithdraw as any)}>
       <div className="glass p-6 rounded-xl">
         <h2 className="text-xl font-semibold mb-6">Withdrawal Details</h2>
 
@@ -49,7 +48,16 @@ const Index = ({ user, usersWallets }: any) => {
               },
             }}
             render={({ field }) => (
-              <Input type="number" placeholder="Enter amount" {...field} />
+              <Input
+                type="number"
+                placeholder="Enter amount"
+                {...field}
+                onChange={(e) =>
+                  field.onChange(
+                    e.target.value === "" ? "" : Number(e.target.value),
+                  )
+                }
+              />
             )}
           />
           {errors.amount && (
@@ -133,8 +141,11 @@ const Index = ({ user, usersWallets }: any) => {
           </div>
         )}
 
-        <Button type="submit" className="w-full bg-primary rounded-lg cursor-pointer">
-          {isSubmitting ? "Processing..." : "Withdraw Now" }
+        <Button
+          type="submit"
+          className="w-full bg-primary rounded-lg cursor-pointer"
+        >
+          {isSubmitting ? "Processing..." : "Withdraw Now"}
         </Button>
       </div>
     </form>

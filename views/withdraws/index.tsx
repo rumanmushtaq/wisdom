@@ -17,7 +17,6 @@ interface WithdrawalHistory {
   txId?: string;
 }
 
-
 const mockSavedAddresses = [
   {
     id: "1",
@@ -32,7 +31,14 @@ const mockSavedAddresses = [
 ];
 
 export default function WithdrawPage() {
-  const { user, usersWallets, isSubmitting, setIsSubmitting, usersWithdraws, settings } = useWithdraws()
+  const {
+    user,
+    usersWallets,
+    isSubmitting,
+    setIsSubmitting,
+    usersWithdraws,
+    settings,
+  } = useWithdraws();
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [selectedAddress, setSelectedAddress] = useState(
     mockSavedAddresses[0].id,
@@ -48,8 +54,8 @@ export default function WithdrawPage() {
     : "0";
   const netAmount = withdrawAmount
     ? (
-      Number.parseFloat(withdrawAmount) - Number.parseFloat(withdrawalFee)
-    ).toFixed(2)
+        Number.parseFloat(withdrawAmount) - Number.parseFloat(withdrawalFee)
+      ).toFixed(2)
     : "0";
 
   const handleWithdraw = async () => {
@@ -189,28 +195,30 @@ export default function WithdrawPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {usersWithdraws?.map((withdrawal) => (
+                  {usersWithdraws?.map((withdrawal: any) => (
                     <tr
                       key={withdrawal?._id}
                       className="border-b border-border/10 hover:bg-card/30 transition-colors"
                     >
-                      <td className="py-3 px-4">{withdrawal?.date}</td>
+                      <td className="py-3 px-4">
+                        {new Date(withdrawal?.createdAt).toLocaleDateString()}
+                      </td>
                       <td className="py-3 px-4 font-semibold">
                         ${withdrawal?.amount}
                       </td>
                       <td className="py-3 px-4 font-mono text-xs text-foreground/70">
-                        {withdrawal?.address}
+                        {withdrawal?.walletId?.address || "N/A"}
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          {getStatusIcon(withdrawal?.status)}
+                          {getStatusIcon(withdrawal?.status?.toLowerCase())}
                           <span className="text-foreground/70">
-                            {getStatusLabel(withdrawal?.status)}
+                            {getStatusLabel(withdrawal?.status?.toLowerCase())}
                           </span>
                         </div>
                       </td>
                       <td className="py-3 px-4 font-mono text-xs text-foreground/70">
-                        {withdrawal?.txId || "-"}
+                        {withdrawal?.transaction || "-"}
                       </td>
                     </tr>
                   ))}

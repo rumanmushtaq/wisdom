@@ -22,21 +22,12 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import WalletService from "@/services/wallet";
-import WithdrawService from "@/services/withdraws";
-
-interface WalletItem {
-  _id?: string;
-  name: string;
-  address: string;
-  createdAt?: string;
-}
+import useWallets from "./useWallets";
 
 const MAX_WALLETS = 3;
 
 export default function WalletsPage() {
-  const [wallets, setWallets] = useState<WalletItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { wallets, isLoading, createWallet, deleteWallet } = useWallets();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const { toast } = useToast();
@@ -47,32 +38,6 @@ export default function WalletsPage() {
     address: "",
   });
   const [errors, setErrors] = useState<{ name?: string; address?: string }>({});
-
-  // Load wallets on mount
-  useEffect(() => {
-    const fetchWallets = async () => {
-      try {
-        setIsLoading(true);
-        const response = await WalletService.getAllWallets();
-        if (response?.data) {
-          setWallets(response.data);
-        } else if (Array.isArray(response)) {
-          setWallets(response);
-        } else {
-          setWallets([]);
-        }
-      } catch (error: any) {
-        toast({
-          title: "Error",
-          description: error?.response?.data?.message || "Failed to load wallets",
-        });
-        setWallets([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchWallets();
-  }, [toast]);
 
   const validateForm = () => {
     const newErrors: { name?: string; address?: string } = {};
@@ -106,49 +71,15 @@ export default function WalletsPage() {
       return;
     }
 
-    try {
-      const response = await WalletService.createWallets({
-        name: formData.name,
-        address: formData.address,
-      });
-
-      const newWallet: WalletItem = response?.data || {
-        _id: Date.now().toString(),
-        name: formData.name,
-        address: formData.address,
-        createdAt: new Date().toISOString(),
-      };
-
-      setWallets((prev) => [...prev, newWallet]);
+    const success = await createWallet(formData.name, formData.address);
+    if (success) {
       setFormData({ name: "", address: "" });
       setIsDialogOpen(false);
-
-      toast({
-        title: "Wallet Created",
-        description: "Your wallet has been added successfully.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error?.response?.data?.message || "Failed to create wallet",
-      });
     }
   };
 
   const handleDeleteWallet = async (id: string) => {
-    try {
-      await WalletService.deleteWallet(id);
-      setWallets((prev) => prev.filter((w) => w._id !== id));
-      toast({
-        title: "Wallet Deleted",
-        description: "Your wallet has been removed.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error?.response?.data?.message || "Failed to delete wallet",
-      });
-    }
+    await deleteWallet(id);
   };
 
   const copyToClipboard = async (address: string, id: string) => {
@@ -200,9 +131,12 @@ export default function WalletsPage() {
               </DialogTrigger>
               <DialogContent className="bg-[#1a1a1a] border-white/10">
                 <DialogHeader>
-                  <DialogTitle className="text-white">Add New Wallet</DialogTitle>
+                  <DialogTitle className="text-white">
+                    Add New Wallet
+                  </DialogTitle>
                   <DialogDescription className="text-gray-400">
-                    Add a new wallet address for withdrawals. You can create up to {MAX_WALLETS} wallets.
+                    Add a new wallet address for withdrawals. You can create up
+                    to {MAX_WALLETS} wallets.
                   </DialogDescription>
                 </DialogHeader>
 
@@ -216,7 +150,10 @@ export default function WalletsPage() {
                       placeholder="e.g., Main Wallet, Account Wallet"
                       value={formData.name}
                       onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, name: e.target.value }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
                       }
                       className="bg-[#0a0a0a] border-white/10 text-white mt-1.5"
                     />
@@ -234,12 +171,17 @@ export default function WalletsPage() {
                       placeholder="Enter your BEP-20 wallet address"
                       value={formData.address}
                       onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, address: e.target.value }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          address: e.target.value,
+                        }))
                       }
                       className="bg-[#0a0a0a] border-white/10 text-white mt-1.5 font-mono text-sm"
                     />
                     {errors.address && (
-                      <p className="text-red-400 text-sm mt-1">{errors.address}</p>
+                      <p className="text-red-400 text-sm mt-1">
+                        {errors.address}
+                      </p>
                     )}
                   </div>
 
@@ -269,7 +211,8 @@ export default function WalletsPage() {
             <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg flex items-center gap-3">
               <AlertCircle className="h-5 w-5 text-yellow-400" />
               <p className="text-yellow-400 text-sm">
-                You have reached the maximum limit of {MAX_WALLETS} wallets. Delete an existing wallet to add a new one.
+                You have reached the maximum limit of {MAX_WALLETS} wallets.
+                Delete an existing wallet to add a new one.
               </p>
             </div>
           )}
@@ -283,7 +226,9 @@ export default function WalletsPage() {
             <div className="flex flex-col items-center justify-center py-16 text-gray-500 bg-[#1a1a1a] border border-white/10 rounded-xl">
               <Wallet className="h-16 w-16 mb-4 opacity-30" />
               <p className="text-lg font-medium">No wallets yet</p>
-              <p className="text-sm mt-1">Add your first wallet to start withdrawing</p>
+              <p className="text-sm mt-1">
+                Add your first wallet to start withdrawing
+              </p>
               <Button
                 onClick={() => setIsDialogOpen(true)}
                 className="mt-6 bg-[#BFFF00] text-black hover:bg-[#BFFF00]/90"
@@ -305,9 +250,14 @@ export default function WalletsPage() {
                         <Wallet className="h-5 w-5 text-[#BFFF00]" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-white">{wallet.name}</h3>
+                        <h3 className="font-semibold text-white">
+                          {wallet.name}
+                        </h3>
                         <p className="text-xs text-gray-500">
-                          Added {new Date(wallet.createdAt || "").toLocaleDateString()}
+                          Added{" "}
+                          {new Date(
+                            wallet.createdAt || "",
+                          ).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -330,7 +280,9 @@ export default function WalletsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => copyToClipboard(wallet.address, wallet._id!)}
+                        onClick={() =>
+                          copyToClipboard(wallet.address, wallet._id!)
+                        }
                         className="h-7 w-7 text-gray-500 hover:text-[#BFFF00] hover:bg-[#BFFF00]/10"
                       >
                         {copiedId === wallet._id ? (
@@ -343,7 +295,9 @@ export default function WalletsPage() {
                   </div>
 
                   {copiedId === wallet._id && (
-                    <p className="text-green-400 text-xs mt-2">Copied to clipboard!</p>
+                    <p className="text-green-400 text-xs mt-2">
+                      Copied to clipboard!
+                    </p>
                   )}
                 </div>
               ))}
@@ -378,7 +332,8 @@ export default function WalletsPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#BFFF00]">•</span>
-                Make sure to enter the correct BEP-20 (Binance Smart Chain) address
+                Make sure to enter the correct BEP-20 (Binance Smart Chain)
+                address
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#BFFF00]">•</span>

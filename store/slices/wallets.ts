@@ -4,6 +4,7 @@ export interface Wallet {
   _id?: string;
   name: string;
   address: string;
+  createdAt?: string;
 }
 
 interface AuthState {
@@ -26,8 +27,14 @@ const walletSlice = createSlice({
     addWalletToTop(state, action: PayloadAction<Wallet>) {
       state.usersWallets.unshift(action.payload);
     },
+
+    removeWallet(state, action: PayloadAction<string>) {
+      state.usersWallets = state.usersWallets.filter(
+        (wallet) => wallet._id !== action.payload,
+      );
+    },
   },
 });
 
-export const { setWallets, addWalletToTop } = walletSlice.actions;
+export const { setWallets, addWalletToTop, removeWallet } = walletSlice.actions;
 export default walletSlice.reducer;
