@@ -53,7 +53,7 @@ export default function WalletsPage() {
     const fetchWallets = async () => {
       try {
         setIsLoading(true);
-        const response = await WithdrawService.getMyWithdraws();
+        const response = await WalletService.getAllWallets();
         if (response?.data) {
           setWallets(response.data);
         } else if (Array.isArray(response)) {
@@ -107,7 +107,7 @@ export default function WalletsPage() {
     }
 
     try {
-      const response = await WithdrawService.createWithdraws({
+      const response = await WalletService.createWallets({
         name: formData.name,
         address: formData.address,
       });

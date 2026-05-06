@@ -16,6 +16,8 @@ const Index = ({ user, usersWallets }: any) => {
     setValue,
     isSubmitting
   } = useWithdraws();
+
+  
   return (
     <form onSubmit={handleSubmit(handleWithdraw)}>
       <div className="glass p-6 rounded-xl">
