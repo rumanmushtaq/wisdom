@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import usePackage from "@/hooks/use-package";
 import { setSettings } from "@/store/slices/setting";
 
-
 const useDashboard = () => {
   const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
@@ -43,15 +42,15 @@ const useDashboard = () => {
   };
 
   const handleToGetAllSettings = async () => {
-    const {data} = await settingService.getSettings();
-    if (data?.success) {
-     dispatch(setSettings(data?.data))
+    const response = await settingService.getSettings();
+    console.log("response", response);
+    if (response?.success) {
+      dispatch(setSettings(response?.data));
     }
   };
 
-
   useEffect(() => {
-    handleToGetAllSettings()
+    handleToGetAllSettings();
     handleToGetAllPackages();
     fetchDashboardStats();
   }, []);
