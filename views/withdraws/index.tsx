@@ -83,12 +83,17 @@ export default function WithdrawPage() {
           <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
         );
       case "processing":
+      case "approved":
         return (
-          <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400 animate-spin" />
+          <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400 animate-spin" />
         );
       case "pending":
         return (
           <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+        );
+      case "rejected":
+        return (
+          <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
         );
       default:
         return null;
@@ -100,9 +105,12 @@ export default function WithdrawPage() {
       case "completed":
         return "Completed";
       case "processing":
-        return "Processing";
+      case "approved":
+        return "Approved";
       case "pending":
         return "Pending";
+      case "rejected":
+        return "Rejected";
       default:
         return "";
     }
