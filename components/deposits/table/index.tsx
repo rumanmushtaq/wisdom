@@ -53,7 +53,8 @@ export function DepositsTable({ deposits }: DepositsTableProps) {
     });
   };
 
-  const truncateId = (id: string) => {
+  const truncateId = (id?: string) => {
+    if (!id) return "N/A";
     if (id.length <= 16) return id;
     return `${id.slice(0, 8)}...${id.slice(-6)}`;
   };
@@ -108,7 +109,7 @@ export function DepositsTable({ deposits }: DepositsTableProps) {
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <TableCell className="font-medium">
-                {deposit?.createdAt ? formatDate(deposit?.createdAt): "N/A"}
+                {deposit?.createdAt ? formatDate(deposit?.createdAt) : "N/A"}
               </TableCell>
               <TableCell>
                 <span className="font-bold text-lg">
