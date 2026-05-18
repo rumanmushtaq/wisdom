@@ -128,9 +128,11 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center gap-20">
             <Link href="/" className="flex items-center gap-2">
-              <span className="font-bold text-xl tracking-tight text-white">
-                WISDOM WORKS
-              </span>
+              <img
+                src="/Logo-2.png"
+                alt="Wisdom Works Logo"
+                className="h-8 w-auto object-contain"
+              />
             </Link>
 
             {/* Desktop Navigation - Updated to match reference design */}

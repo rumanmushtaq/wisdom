@@ -5,7 +5,6 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Providers from "@/components/providers";
 
-
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
@@ -14,6 +13,9 @@ export const metadata: Metadata = {
   description:
     "Deposit, complete tasks, and withdraw crypto. Build your team, earn from referrals.",
   generator: "v0.app",
+  icons: {
+    icon: "/Favicon-white.png",
+  },
 };
 
 export const viewport: Viewport = {

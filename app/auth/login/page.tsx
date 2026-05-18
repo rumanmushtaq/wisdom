@@ -24,8 +24,12 @@ export default function LoginPage() {
         <div className="max-w-md mx-auto px-4 py-20">
           <div className="glass p-8 rounded-xl">
             <div className="text-center mb-8">
-              <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Lock className="h-6 w-6 text-primary" />
+              <div className="flex justify-center mb-6">
+                <img
+                  src="/Logo-2.png"
+                  alt="Wisdom Works Logo"
+                  className="h-16 w-auto object-contain"
+                />
               </div>
               <h1 className="text-2xl font-bold mb-2">Welcome Back</h1>
               <p className="text-foreground/60 text-sm">
