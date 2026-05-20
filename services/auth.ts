@@ -113,6 +113,21 @@ class AuthService {
       };
     }
   }
+
+  async getProfile(): Promise<any> {
+    try {
+      const res = await HTTP_CLIENT.get(apiEndpoints.Users.PROFILE);
+      return {
+        success: true,
+        data: res.data,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        data: error.message,
+      };
+    }
+  }
 }
 
 export default new AuthService();

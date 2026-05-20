@@ -6,21 +6,21 @@ import { TaskProgress } from "@/components/dashboard/task-progress";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { Wallet, Zap, Users, ArrowDownLeft } from "lucide-react";
 import useDashboard from "./useDashboard";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import PackagesData from "@/components/dashboard/packages";
 
 export default function DashboardPage() {
   const { packages, user, stats, loading, handleToChosePlan } = useDashboard();
 
   // Fallback to user credits if stats not loaded yet
-  const totalBalance = stats?.totalBalance ?? user?.credits ?? 0;
-  const taskEarnings = stats?.taskEarnings ?? 0;
-  const referralEarnings = stats?.referralEarnings ?? 0;
-  const totalWithdrawn = stats?.totalWithdrawn ?? 0;
-  const tasksCompleted = stats?.tasksCompleted ?? 0;
-  const tasksTotal = stats?.tasksTotal ?? 10;
-  const dailyTaskTarget = stats?.dailyTaskTarget ?? 10;
+  // Access stats from the new nested structure
+  const totalBalance = stats?.stats?.totalBalance?.value ?? user?.credits ?? 0;
+  const taskEarnings = stats?.stats?.taskEarnings?.value ?? 0;
+  const referralEarnings = stats?.stats?.referralIncome?.value ?? 0;
+  const totalWithdrawn = stats?.stats?.totalWithdrawn?.value ?? 0;
+
+  const tasksCompleted = stats?.taskProgress?.completed ?? 0;
+  const tasksTotal = stats?.taskProgress?.total ?? 10;
+  const dailyTaskTarget = stats?.taskProgress?.dailyTarget ?? 10;
 
   const displayName =
     user?.firstName && user?.lastName
@@ -52,10 +52,13 @@ export default function DashboardPage() {
             <StatCard
               label="Total Balance"
               value={loading ? "..." : `${totalBalance.toFixed(2)}`}
-              // subtext="Available: 3,450.23"
               icon={<Wallet className="h-5 w-5" />}
               color="primary"
-              trend={{ value: 12.5, isPositive: true }}
+              trend={{
+                value: stats?.stats?.totalBalance?.change ?? 0,
+                isPositive:
+                  stats?.stats?.totalBalance?.changeType === "increase",
+              }}
             />
             <StatCard
               label="Task Earnings"
@@ -63,15 +66,23 @@ export default function DashboardPage() {
               subtext="This week"
               icon={<Zap className="h-5 w-5" />}
               color="warning"
-              trend={{ value: 5.2, isPositive: true }}
+              trend={{
+                value: stats?.stats?.taskEarnings?.change ?? 0,
+                isPositive:
+                  stats?.stats?.taskEarnings?.changeType === "increase",
+              }}
             />
             <StatCard
               label="Referral Income"
               value={loading ? "..." : `${referralEarnings.toFixed(2)}`}
-              subtext={`From ${stats?.directReferrals ?? 0} referrals`}
+              subtext={`From ${stats?.stats?.referralIncome?.referralCount ?? 0} referrals`}
               icon={<Users className="h-5 w-5" />}
               color="info"
-              trend={{ value: 8.3, isPositive: true }}
+              trend={{
+                value: stats?.stats?.referralIncome?.change ?? 0,
+                isPositive:
+                  stats?.stats?.referralIncome?.changeType === "increase",
+              }}
             />
             <StatCard
               label="Total Withdrawn"
@@ -79,7 +90,11 @@ export default function DashboardPage() {
               subtext="Lifetime"
               icon={<ArrowDownLeft className="h-5 w-5" />}
               color="success"
-              trend={{ value: 3.1, isPositive: true }}
+              trend={{
+                value: stats?.stats?.totalWithdrawn?.change ?? 0,
+                isPositive:
+                  stats?.stats?.totalWithdrawn?.changeType === "increase",
+              }}
             />
           </div>
 

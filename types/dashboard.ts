@@ -1,20 +1,27 @@
-
-
+export interface StatValue {
+  value: number;
+  change: number;
+  changeType: "increase" | "decrease";
+  period?: string;
+  referralCount?: number;
+}
 
 export interface DashboardStats {
-  totalBalance: number;
-  availableBalance: number;
-  lockedBalance: number;
-  taskEarnings: number;
-  referralEarnings: number;
-  totalWithdrawn: number;
-  totalDeposited: number;
-  directReferrals: number;
-  totalTeamSize: number;
-  totalTeamEarnings: number;
-  tasksCompleted: number;
-  tasksTotal: number;
-  dailyTaskTarget: number;
+  stats: {
+    totalBalance: StatValue;
+    taskEarnings: StatValue;
+    referralIncome: StatValue;
+    totalWithdrawn: StatValue;
+  };
+  taskProgress: {
+    completed: number;
+    total: number;
+    percentage: number;
+    dailyTarget: number;
+    status: string;
+  };
+  todaysTasks: any[];
+  tier: any;
 }
 
 export interface DashboardState {

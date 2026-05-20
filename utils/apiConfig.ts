@@ -25,6 +25,7 @@ const apiEndpoints = {
   },
   Dashboard: {
     STATS: `/api/v1/dashboard/stats`,
+    USER_STATS: `/api/v1/dashboard/user`,
     MONTHLYREVENUE: `/api/v1/dashboard/monthly-revenue`,
     REFERRAL_STATS: `/api/v1/dashboard/referral-stats`,
   },

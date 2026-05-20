@@ -7,6 +7,15 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
   Bell,
   Check,
   XCircle,
@@ -14,11 +23,14 @@ import {
   AlertTriangle,
   CheckCheck,
   Trash2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { AppDispatch, RootState } from "@/store/store";
 import {
   setNotifications,
   setUnreadCount,
+  setPagination,
   markNotificationAsRead,
   markAllNotificationsAsRead,
   deleteNotification as deleteNotificationAction,
@@ -30,7 +42,17 @@ interface Notification {
   userId: string;
   title: string;
   message: string;
-  type: "WELCOME" | "TASK" | "DEPOSIT" | "WITHDRAWAL" | "REFERRAL" | "SYSTEM" | "SUCCESS" | "WARNING" | "INFO" | "ERROR";
+  type:
+    | "WELCOME"
+    | "TASK"
+    | "DEPOSIT"
+    | "WITHDRAWAL"
+    | "REFERRAL"
+    | "SYSTEM"
+    | "SUCCESS"
+    | "WARNING"
+    | "INFO"
+    | "ERROR";
   priority: "LOW" | "MEDIUM" | "HIGH";
   isRead: boolean;
   createdAt: string;
@@ -44,31 +66,53 @@ function formatTimeAgo(dateString: string): string {
 
   if (diffInSeconds < 60) return "just now";
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} min ago`;
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hour${Math.floor(diffInSeconds / 3600) > 1 ? "s" : ""} ago`;
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} day${Math.floor(diffInSeconds / 86400) > 1 ? "s" : ""} ago`;
+  if (diffInSeconds < 86400)
+    return `${Math.floor(diffInSeconds / 3600)} hour${Math.floor(diffInSeconds / 3600) > 1 ? "s" : ""} ago`;
+  if (diffInSeconds < 604800)
+    return `${Math.floor(diffInSeconds / 86400)} day${Math.floor(diffInSeconds / 86400) > 1 ? "s" : ""} ago`;
   return `${Math.floor(diffInSeconds / 604800)} week${Math.floor(diffInSeconds / 604800) > 1 ? "s" : ""} ago`;
 }
 
 export default function NotificationsPage() {
   const dispatch = useDispatch<AppDispatch>();
-  const { notifications, unreadCount } = useSelector((state: RootState) => state.notifications);
+  const { notifications, unreadCount, total, allTotal, totalPages, page } =
+    useSelector((state: RootState) => state.notifications);
   const [filter, setFilter] = useState<"all" | "unread">("all");
   const [isLoading, setIsLoading] = useState(false);
-
-  const filteredNotifications =
-    filter === "unread"
-      ? notifications.filter((n) => !n.isRead)
-      : notifications;
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    fetchNotifications(currentPage, filter);
+  }, [currentPage, filter]);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = async (
+    pageToFetch: number,
+    activeFilter: "all" | "unread",
+  ) => {
     setIsLoading(true);
-    const response = await NotificationsService.getAllNotifications();
-    if (response.success && typeof response.data === "object" && "data" in response.data) {
+    const params = {
+      page: pageToFetch,
+      limit: 10,
+      isRead: activeFilter === "unread" ? "false" : undefined,
+    };
+    const response = await NotificationsService.getAllNotifications(
+      params as any,
+    );
+    if (
+      response.success &&
+      typeof response.data === "object" &&
+      "data" in response.data
+    ) {
       dispatch(setNotifications(response.data.data));
+      dispatch(
+        setPagination({
+          total: response.data.total,
+          page: response.data.page,
+          limit: response.data.limit,
+          totalPages: response.data.totalPages,
+          isFiltered: activeFilter !== "all",
+        }),
+      );
       dispatch(setUnreadCount(response.data.unreadCount));
     }
     setIsLoading(false);
@@ -78,6 +122,9 @@ export default function NotificationsPage() {
     const response = await NotificationsService.markAsRead(id);
     if (response.success) {
       dispatch(markNotificationAsRead(id));
+      // Re-fetch to update counts and state if needed, though Redux might handle it
+      // For consistency with server state:
+      fetchNotifications(currentPage, filter);
     }
   };
 
@@ -85,6 +132,7 @@ export default function NotificationsPage() {
     const response = await NotificationsService.markAllAsRead();
     if (response.success) {
       dispatch(markAllNotificationsAsRead());
+      fetchNotifications(currentPage, filter);
     }
   };
 
@@ -92,6 +140,7 @@ export default function NotificationsPage() {
     const response = await NotificationsService.deleteNotification(id);
     if (response.success) {
       dispatch(deleteNotificationAction(id));
+      fetchNotifications(currentPage, filter);
     }
   };
 
@@ -99,8 +148,8 @@ export default function NotificationsPage() {
     const readNotifications = notifications.filter((n) => n.isRead);
     for (const notification of readNotifications) {
       await NotificationsService.deleteNotification(notification._id);
-      dispatch(deleteNotificationAction(notification._id));
     }
+    fetchNotifications(currentPage, filter);
   };
 
   const getNotificationIcon = (type: Notification["type"]) => {
@@ -132,6 +181,57 @@ export default function NotificationsPage() {
           </div>
         );
     }
+  };
+
+  const renderPaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 5;
+
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    if (startPage > 1) {
+      items.push(
+        <PaginationItem key="1">
+          <PaginationLink onClick={() => setCurrentPage(1)}>1</PaginationLink>
+        </PaginationItem>,
+      );
+      if (startPage > 2) {
+        items.push(<PaginationEllipsis key="ellipsis1" />);
+      }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      items.push(
+        <PaginationItem key={i}>
+          <PaginationLink
+            onClick={() => setCurrentPage(i)}
+            isActive={currentPage === i}
+          >
+            {i}
+          </PaginationLink>
+        </PaginationItem>,
+      );
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        items.push(<PaginationEllipsis key="ellipsis2" />);
+      }
+      items.push(
+        <PaginationItem key={totalPages}>
+          <PaginationLink onClick={() => setCurrentPage(totalPages)}>
+            {totalPages}
+          </PaginationLink>
+        </PaginationItem>,
+      );
+    }
+
+    return items;
   };
 
   return (
@@ -181,7 +281,11 @@ export default function NotificationsPage() {
           {/* Filter Tabs */}
           <Tabs
             value={filter}
-            onValueChange={(v) => setFilter(v as "all" | "unread")}
+            onValueChange={(v) => {
+              const newFilter = v as "all" | "unread";
+              setFilter(newFilter);
+              setCurrentPage(1);
+            }}
             className="mb-6"
           >
             <TabsList className="bg-[#1a1a1a] border border-white/10">
@@ -189,7 +293,7 @@ export default function NotificationsPage() {
                 value="all"
                 className="data-[state=active]:bg-[#BFFF00] data-[state=active]:text-black"
               >
-                All ({notifications.length})
+                All ({allTotal || total})
               </TabsTrigger>
               <TabsTrigger
                 value="unread"
@@ -201,8 +305,13 @@ export default function NotificationsPage() {
           </Tabs>
 
           {/* Notifications List */}
-          <div className="bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden">
-            {filteredNotifications.length === 0 ? (
+          <div className="bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden mb-6">
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#BFFF00] mb-4"></div>
+                <p className="text-lg font-medium">Loading notifications...</p>
+              </div>
+            ) : notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-gray-500">
                 <Bell className="h-16 w-16 mb-4 opacity-30" />
                 <p className="text-lg font-medium">
@@ -217,13 +326,14 @@ export default function NotificationsPage() {
                 </p>
               </div>
             ) : (
-              <ScrollArea className="h-[calc(100vh-320px)]">
+              <ScrollArea className="h-[calc(100vh-380px)]">
                 <div className="divide-y divide-white/5">
-                  {filteredNotifications.map((notification) => (
+                  {notifications.map((notification) => (
                     <div
                       key={notification._id}
-                      className={`flex gap-4 px-6 py-4 hover:bg-white/5 transition-colors group ${!notification.isRead ? "bg-white/5" : ""
-                        }`}
+                      className={`flex gap-4 px-6 py-4 hover:bg-white/5 transition-colors group ${
+                        !notification.isRead ? "bg-white/5" : ""
+                      }`}
                     >
                       {/* Icon */}
                       <div className="flex-shrink-0">
@@ -236,10 +346,11 @@ export default function NotificationsPage() {
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <h3
-                                className={`font-medium ${notification.isRead
+                                className={`font-medium ${
+                                  notification.isRead
                                     ? "text-gray-400"
                                     : "text-white"
-                                  }`}
+                                }`}
                               >
                                 {notification.title}
                               </h3>
@@ -262,7 +373,9 @@ export default function NotificationsPage() {
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8 hover:bg-white/10"
-                                onClick={() => handleMarkAsRead(notification._id)}
+                                onClick={() =>
+                                  handleMarkAsRead(notification._id)
+                                }
                                 title="Mark as read"
                               >
                                 <Check className="h-4 w-4 text-green-400" />
@@ -272,7 +385,9 @@ export default function NotificationsPage() {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 hover:bg-white/10"
-                              onClick={() => handleDeleteNotification(notification._id)}
+                              onClick={() =>
+                                handleDeleteNotification(notification._id)
+                              }
                               title="Delete"
                             >
                               <Trash2 className="h-4 w-4 text-red-400" />
@@ -286,6 +401,54 @@ export default function NotificationsPage() {
               </ScrollArea>
             )}
           </div>
+
+          {/* Pagination Section */}
+          {!isLoading && totalPages > 1 && (
+            <div className="flex items-center justify-between px-2 py-4">
+              <p className="text-sm text-muted-foreground">
+                Showing{" "}
+                <span className="font-medium">
+                  {(currentPage - 1) * 10 + 1}
+                </span>{" "}
+                to{" "}
+                <span className="font-medium">
+                  {Math.min(currentPage * 10, total)}
+                </span>{" "}
+                of <span className="font-medium">{total}</span> notifications
+              </p>
+              <Pagination className="mx-0 w-auto">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(1, prev - 1))
+                      }
+                      className={
+                        currentPage === 1
+                          ? "pointer-events-none opacity-50"
+                          : "cursor-pointer"
+                      }
+                    />
+                  </PaginationItem>
+
+                  {renderPaginationItems()}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                      }
+                      className={
+                        currentPage === totalPages
+                          ? "pointer-events-none opacity-50"
+                          : "cursor-pointer"
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </div>
       </main>
     </>

@@ -6,7 +6,17 @@ export interface Notification {
   userId: string;
   title: string;
   message: string;
-  type: "WELCOME" | "TASK" | "DEPOSIT" | "WITHDRAWAL" | "REFERRAL" | "SYSTEM" | "SUCCESS" | "WARNING" | "INFO" | "ERROR";
+  type:
+    | "WELCOME"
+    | "TASK"
+    | "DEPOSIT"
+    | "WITHDRAWAL"
+    | "REFERRAL"
+    | "SYSTEM"
+    | "SUCCESS"
+    | "WARNING"
+    | "INFO"
+    | "ERROR";
   priority: "LOW" | "MEDIUM" | "HIGH";
   isRead: boolean;
   createdAt: string;
@@ -23,9 +33,15 @@ export interface NotificationsResponse {
 }
 
 class NotificationsService {
-  async getAllNotifications(): Promise<{ success: boolean; data: NotificationsResponse | string }> {
+  async getAllNotifications(params?: {
+    page?: number;
+    limit?: number;
+    isRead?: boolean;
+  }): Promise<{ success: boolean; data: NotificationsResponse | string }> {
     try {
-      const res = await HTTP_CLIENT.get(apiEndpoints.Notifications.GET_ALL);
+      const res = await HTTP_CLIENT.get(apiEndpoints.Notifications.GET_ALL, {
+        params,
+      });
       return {
         success: true,
         data: res.data,
@@ -38,9 +54,14 @@ class NotificationsService {
     }
   }
 
-  async getUnreadCount(): Promise<{ success: boolean; data: { unreadCount: number } | string }> {
+  async getUnreadCount(): Promise<{
+    success: boolean;
+    data: { unreadCount: number } | string;
+  }> {
     try {
-      const res = await HTTP_CLIENT.get(apiEndpoints.Notifications.GET_UNREAD_COUNT);
+      const res = await HTTP_CLIENT.get(
+        apiEndpoints.Notifications.GET_UNREAD_COUNT,
+      );
       return {
         success: true,
         data: res.data,
@@ -53,9 +74,13 @@ class NotificationsService {
     }
   }
 
-  async getNotificationById(id: string): Promise<{ success: boolean; data: Notification | string }> {
+  async getNotificationById(
+    id: string,
+  ): Promise<{ success: boolean; data: Notification | string }> {
     try {
-      const res = await HTTP_CLIENT.get(apiEndpoints.Notifications.GET_BY_ID(id));
+      const res = await HTTP_CLIENT.get(
+        apiEndpoints.Notifications.GET_BY_ID(id),
+      );
       return {
         success: true,
         data: res.data,
@@ -68,9 +93,13 @@ class NotificationsService {
     }
   }
 
-  async markAsRead(id: string): Promise<{ success: boolean; data: Notification | string }> {
+  async markAsRead(
+    id: string,
+  ): Promise<{ success: boolean; data: Notification | string }> {
     try {
-      const res = await HTTP_CLIENT.put(apiEndpoints.Notifications.UPDATE(id));
+      const res = await HTTP_CLIENT.put(apiEndpoints.Notifications.UPDATE(id), {
+        isRead: true,
+      });
       return {
         success: true,
         data: res.data,
@@ -83,7 +112,9 @@ class NotificationsService {
     }
   }
 
-  async deleteNotification(id: string): Promise<{ success: boolean; data: string }> {
+  async deleteNotification(
+    id: string,
+  ): Promise<{ success: boolean; data: string }> {
     try {
       await HTTP_CLIENT.delete(apiEndpoints.Notifications.DELETE(id));
       return {

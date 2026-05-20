@@ -1,26 +1,14 @@
 import apiEndpoints from "@/utils/apiConfig";
 import { HTTP_CLIENT } from "@/utils/axiosClient";
-
-export interface DashboardStats {
-  totalBalance: number;
-  availableBalance: number;
-  lockedBalance: number;
-  taskEarnings: number;
-  referralEarnings: number;
-  totalWithdrawn: number;
-  totalDeposited: number;
-  directReferrals: number;
-  totalTeamSize: number;
-  totalTeamEarnings: number;
-  tasksCompleted: number;
-  tasksTotal: number;
-  dailyTaskTarget: number;
-}
+import { DashboardStats } from "@/types/dashboard";
 
 class DashboardService {
-  async getDashboardStats(): Promise<{ success: boolean; data: DashboardStats | string }> {
+  async getDashboardStats(): Promise<{
+    success: boolean;
+    data: DashboardStats | string;
+  }> {
     try {
-      const res = await HTTP_CLIENT.get(apiEndpoints.Dashboard.STATS);
+      const res = await HTTP_CLIENT.get(apiEndpoints.Dashboard.USER_STATS);
       return {
         success: true,
         data: res.data,

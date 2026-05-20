@@ -5,7 +5,17 @@ export interface Notification {
   userId: string;
   title: string;
   message: string;
-  type: "WELCOME" | "TASK" | "DEPOSIT" | "WITHDRAWAL" | "REFERRAL" | "SYSTEM" | "SUCCESS" | "WARNING" | "INFO" | "ERROR";
+  type:
+    | "WELCOME"
+    | "TASK"
+    | "DEPOSIT"
+    | "WITHDRAWAL"
+    | "REFERRAL"
+    | "SYSTEM"
+    | "SUCCESS"
+    | "WARNING"
+    | "INFO"
+    | "ERROR";
   priority: "LOW" | "MEDIUM" | "HIGH";
   isRead: boolean;
   createdAt: string;
@@ -15,12 +25,22 @@ export interface Notification {
 interface NotificationsState {
   notifications: Notification[];
   unreadCount: number;
+  total: number;
+  allTotal: number;
+  page: number;
+  limit: number;
+  totalPages: number;
   loading: boolean;
 }
 
 const initialState: NotificationsState = {
   notifications: [],
   unreadCount: 0,
+  total: 0,
+  allTotal: 0,
+  page: 1,
+  limit: 10,
+  totalPages: 0,
   loading: false,
 };
 
@@ -31,11 +51,31 @@ const notificationsSlice = createSlice({
     setNotifications: (state, action: PayloadAction<Notification[]>) => {
       state.notifications = action.payload;
     },
+    setPagination: (
+      state,
+      action: PayloadAction<{
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+        isFiltered?: boolean;
+      }>,
+    ) => {
+      state.total = action.payload.total;
+      state.page = action.payload.page;
+      state.limit = action.payload.limit;
+      state.totalPages = action.payload.totalPages;
+      if (!action.payload.isFiltered) {
+        state.allTotal = action.payload.total;
+      }
+    },
     setUnreadCount: (state, action: PayloadAction<number>) => {
       state.unreadCount = action.payload;
     },
     markNotificationAsRead: (state, action: PayloadAction<string>) => {
-      const notification = state.notifications.find((n) => n._id === action.payload);
+      const notification = state.notifications.find(
+        (n) => n._id === action.payload,
+      );
       if (notification) {
         notification.isRead = true;
       }
@@ -48,11 +88,15 @@ const notificationsSlice = createSlice({
       state.unreadCount = 0;
     },
     deleteNotification: (state, action: PayloadAction<string>) => {
-      const notification = state.notifications.find((n) => n._id === action.payload);
+      const notification = state.notifications.find(
+        (n) => n._id === action.payload,
+      );
       if (notification && !notification.isRead) {
         state.unreadCount = Math.max(0, state.unreadCount - 1);
       }
-      state.notifications = state.notifications.filter((n) => n._id !== action.payload);
+      state.notifications = state.notifications.filter(
+        (n) => n._id !== action.payload,
+      );
     },
     addNotification: (state, action: PayloadAction<Notification>) => {
       state.notifications.unshift(action.payload);
@@ -68,6 +112,7 @@ const notificationsSlice = createSlice({
 
 export const {
   setNotifications,
+  setPagination,
   setUnreadCount,
   markNotificationAsRead,
   markAllNotificationsAsRead,

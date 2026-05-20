@@ -2,8 +2,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import settingService from "@/services/setting";
+import authService from "@/services/auth";
 import DashboardService from "@/services/dashboard";
 import { setDashboardStats, setLoading } from "@/store/slices/dashboard";
+import { setUser } from "@/store/slices/auth";
 import { AppDispatch, RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
 import usePackage from "@/hooks/use-package";
@@ -49,10 +51,18 @@ const useDashboard = () => {
     }
   };
 
+  const fetchUserProfile = async () => {
+    const response = await authService.getProfile();
+    if (response.success) {
+      dispatch(setUser({ user: response.data }));
+    }
+  };
+
   useEffect(() => {
     handleToGetAllSettings();
     handleToGetAllPackages();
     fetchDashboardStats();
+    fetchUserProfile();
   }, []);
   return { user, packages, stats, loading, handleToChosePlan };
 };

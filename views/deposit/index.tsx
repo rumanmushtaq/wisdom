@@ -112,7 +112,7 @@ export default function Index() {
                 {user?.isVerified ? (
                   <>
                     <div className="text-2xl font-bold text-primary mb-1">
-                      $10
+                      $100
                     </div>
                     <p className="text-xs text-muted-foreground">
                       Minimum Deposit
