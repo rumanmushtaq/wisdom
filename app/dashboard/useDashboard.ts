@@ -51,18 +51,11 @@ const useDashboard = () => {
     }
   };
 
-  const fetchUserProfile = async () => {
-    const response = await authService.getProfile();
-    if (response.success) {
-      dispatch(setUser({ user: response.data }));
-    }
-  };
-
   useEffect(() => {
     handleToGetAllSettings();
     handleToGetAllPackages();
     fetchDashboardStats();
-    fetchUserProfile();
+
   }, []);
   return { user, packages, stats, loading, handleToChosePlan };
 };
