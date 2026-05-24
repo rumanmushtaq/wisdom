@@ -36,7 +36,11 @@ class AuthService {
       const res = await HTTP_CLIENT.post(apiEndpoints.Auth.REGISTER, payload);
       return res.data;
     } catch (error: any) {
-      return error.message;
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Registration failed. Please try again.";
+      throw new Error(message);
     }
   }
 

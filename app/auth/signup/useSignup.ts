@@ -66,20 +66,19 @@ const useSignup = () => {
 
       console.log("res", res)
 
-      if (res?.data?.success) {
-        document.cookie = `access_token=${res?.data?.access_token}; path=/; max-age=3600`; // 1 hour
-        document.cookie = `refresh_token=${res?.data?.refresh_token
+      if (res?.success) {
+        document.cookie = `access_token=${res?.access_token}; path=/; max-age=3600`; // 1 hour
+        document.cookie = `refresh_token=${res?.refresh_token
           }; path=/; max-age=${7 * 24 * 60 * 60}`; // 7 days
 
         dispatch(
           loginSuccess({
-            accessToken: res?.data?.access_token,
-            refreshToken: res?.data?.refresh_token,
+            accessToken: res?.access_token,
+            refreshToken: res?.refresh_token,
           }),
         );
-        dispatch(setUser({ user: res?.data?.user }));
+        dispatch(setUser({ user: res?.user }));
         toast.success(
-          res?.data?.message ||
           res?.message
         );
         window.location.href = "/dashboard";
