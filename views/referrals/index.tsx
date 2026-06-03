@@ -261,18 +261,18 @@ export default function ReferralPage() {
                     >
                       <td className="py-3 px-4 font-medium">{user.username}</td>
                       <td className="py-3 px-4 text-foreground/70">
-                        {user.dateJoined}
+                        {user.dateJoined || 'N/A'}
                       </td>
-                      <td className="py-3 px-4">{user.tasksCompleted}</td>
+                      <td className="py-3 px-4">{user.tasksCompleted ?? 0}</td>
                       <td className="py-3 px-4 font-semibold text-green-600 dark:text-green-400">
-                        +${user.totalEarned.toFixed(2)}
+                        +${(user.totalEarned || 0).toFixed(2)}
                       </td>
                       <td className="py-3 px-4">
                         <span
-                          className={`px-2.5 py-1 rounded-full text-xs font-medium ${getTierColor(user.tier)}`}
+                          className={`px-2.5 py-1 rounded-full text-xs font-medium ${getTierColor(user.tier || "bronze")}`}
                         >
-                          {user.tier.charAt(0).toUpperCase() +
-                            user.tier.slice(1)}
+                          {(user.tier || "bronze").charAt(0).toUpperCase() +
+                            (user.tier || "bronze").slice(1)}
                         </span>
                       </td>
                     </tr>

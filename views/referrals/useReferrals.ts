@@ -25,8 +25,9 @@ const useReferrals = () => {
 
   const handleToGetReferralsOfThisUser = async () => {
     try {
-      const { data } = await referralService.getUserReferrals();
-      dispatch(setReferrals(data));
+      const data = await referralService.getUserReferrals();
+      console.log("referrals data:", data);
+      dispatch(setReferrals(Array.isArray(data) ? data : []));
     } catch (error) {
       console.log("error ", error);
     }
@@ -35,7 +36,9 @@ const useReferrals = () => {
   const handleToGetReferralStats = async () => {
     try {
       const data = await referralService.getReferralStats();
-      setReferralStats(data);
+      console.log("referral stats:", data);
+      // data may be wrapped in { data: ... } or be the stats object directly
+      setReferralStats(data?.data ?? data);
     } catch (error) {
       console.log("error ", error);
     }
