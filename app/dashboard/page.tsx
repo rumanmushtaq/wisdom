@@ -11,12 +11,11 @@ import PackagesData from "@/components/dashboard/packages";
 export default function DashboardPage() {
   const { packages, user, stats, loading, handleToChosePlan } = useDashboard();
 
-  // Fallback to user credits if stats not loaded yet
-  // Access stats from the new nested structure
-  const totalBalance = stats?.stats?.totalBalance?.value ?? user?.credits ?? 0;
-  const taskEarnings = stats?.stats?.taskEarnings?.value ?? 0;
-  const referralEarnings = stats?.stats?.referralIncome?.value ?? 0;
-  const totalWithdrawn = stats?.stats?.totalWithdrawn?.value ?? 0;
+  // Use the exact database lifetime totals passed from the new earnings block
+  const totalBalance = stats?.earnings?.credits ?? user?.credits ?? 0;
+  const taskEarnings = stats?.earnings?.taskEarnings ?? 0;
+  const referralEarnings = stats?.earnings?.referralEarnings ?? 0;
+  const totalWithdrawn = stats?.earnings?.withdrawEarnings ?? 0;
 
   const tasksCompleted = stats?.taskProgress?.completed ?? 0;
   const tasksTotal = stats?.taskProgress?.total ?? 10;
@@ -51,49 +50,49 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatCard
               label="Total Balance"
-              value={loading ? "..." : `${totalBalance.toFixed(2)}`}
+              value={loading ? "..." : `${Number(totalBalance).toFixed(2)}`}
               icon={<Wallet className="h-5 w-5" />}
               color="primary"
               trend={{
-                value: stats?.stats?.totalBalance?.change ?? 0,
+                value: stats?.earnings?.credits?.change ?? 0,
                 isPositive:
-                  stats?.stats?.totalBalance?.changeType === "increase",
+                  stats?.earnings?.credits?.changeType === "increase",
               }}
             />
             <StatCard
               label="Task Earnings"
-              value={loading ? "..." : `${taskEarnings.toFixed(2)}`}
+              value={loading ? "..." : `${Number(taskEarnings).toFixed(2)}`}
               subtext="This week"
               icon={<Zap className="h-5 w-5" />}
               color="warning"
               trend={{
-                value: stats?.stats?.taskEarnings?.change ?? 0,
+                value: stats?.earnings?.taskEarnings?.change ?? 0,
                 isPositive:
-                  stats?.stats?.taskEarnings?.changeType === "increase",
+                  stats?.earnings?.taskEarnings?.changeType === "increase",
               }}
             />
             <StatCard
               label="Referral Income"
-              value={loading ? "..." : `${referralEarnings.toFixed(2)}`}
-              subtext={`From ${stats?.stats?.referralIncome?.referralCount ?? 0} referrals`}
+              value={loading ? "..." : `${Number(referralEarnings).toFixed(2)}`}
+              subtext={`From ${stats?.earnings?.referralEarnings?.referralCount ?? 0} referrals`}
               icon={<Users className="h-5 w-5" />}
               color="info"
               trend={{
-                value: stats?.stats?.referralIncome?.change ?? 0,
+                value: stats?.earnings?.referralEarnings?.change ?? 0,
                 isPositive:
-                  stats?.stats?.referralIncome?.changeType === "increase",
+                  stats?.earnings?.referralEarnings?.changeType === "increase",
               }}
             />
             <StatCard
               label="Total Withdrawn"
-              value={loading ? "..." : `${totalWithdrawn.toFixed(2)}`}
+              value={loading ? "..." : `${Number(totalWithdrawn).toFixed(2)}`}
               subtext="Lifetime"
               icon={<ArrowDownLeft className="h-5 w-5" />}
               color="success"
               trend={{
-                value: stats?.stats?.totalWithdrawn?.change ?? 0,
+                value: stats?.earnings?.withdrawEarnings?.change ?? 0,
                 isPositive:
-                  stats?.stats?.totalWithdrawn?.changeType === "increase",
+                  stats?.earnings?.withdrawEarnings?.changeType === "increase",
               }}
             />
           </div>

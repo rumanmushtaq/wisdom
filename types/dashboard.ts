@@ -7,11 +7,11 @@ export interface StatValue {
 }
 
 export interface DashboardStats {
-  stats: {
-    totalBalance: StatValue;
+  earnings: {
+    credits: StatValue;
     taskEarnings: StatValue;
-    referralIncome: StatValue;
-    totalWithdrawn: StatValue;
+    referralEarnings: StatValue;
+    withdrawEarnings: StatValue;
   };
   taskProgress: {
     completed: number;
