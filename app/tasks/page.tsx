@@ -34,7 +34,7 @@ export default function TasksPage() {
   } = useTasks();
   const [filter, setFilter] = useState<TaskStatus>("all");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const filteredTasks =
     filter === "all"

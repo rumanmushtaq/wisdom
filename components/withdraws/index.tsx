@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-const Index = ({ user, usersWallets }: any) => {
+const Index = ({ user, usersWallets, settings }: any) => {
   const {
     netAmount,
     withdrawalFee,
@@ -15,7 +15,7 @@ const Index = ({ user, usersWallets }: any) => {
     errors,
     setValue,
     isSubmitting,
-  } = useWithdraws();
+  } = useWithdraws({settings});
 
   return (
     <form onSubmit={handleSubmit(handleWithdraw as any)}>
@@ -131,7 +131,7 @@ const Index = ({ user, usersWallets }: any) => {
               <span>${amount}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span>Network Fee ({withdrawalFee}%):</span>
+              <span>Network Fee ({settings?.handlingFee}%):</span>
               <span>-${withdrawalFee}</span>
             </div>
             <div className="border-t pt-2 flex justify-between text-sm">

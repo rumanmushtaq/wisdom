@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import walletService from "@/services/withdraws";
 import { WithdrawFormValues, withdrawSchema } from "@/schemas/withdraw";
 
-const useWithdraws = () => {
+const useWithdraws = ({settings}: any) => {
   const {
     control,
     handleSubmit,
@@ -21,8 +21,8 @@ const useWithdraws = () => {
   });
 
   const amount = watch("amount");
-  const withdrawalFee = amount ? (amount * 0.095).toFixed(2) : "0.00";
-  const netAmount = amount ? (amount - amount * 0.095).toFixed(2) : "0.00";
+  const withdrawalFee = amount ? (amount * (Number(settings?.handlingFee ?? 9.5)/100)).toFixed(2) : "0.00";
+  const netAmount = amount ? (amount - (amount * (Number(settings?.handlingFee ?? 9.5)/100))).toFixed(2) : "0.00";
 
   const handleWithdraw = async (data: WithdrawFormValues) => {
     try {
