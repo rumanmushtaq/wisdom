@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import walletService from "@/services/withdraws";
 import { setWallets } from "@/store/slices/wallets";
 import { setWithdraws } from "@/store/slices/withdraws";
+import { setUser } from "@/store/slices/auth";
+import AuthService from "@/services/auth";
 
 const useWithdraws = () => {
   const dispatch = useDispatch();
@@ -25,8 +27,18 @@ const useWithdraws = () => {
     const data = await walletService.getMyWithdraws();
     console.log(data);
   };
+
+      const getProfile = async () => {
+        const {data} = await AuthService.getProfile();
+        if (data?.success) {
+          console.log("get profile in header",data.profile);
+          dispatch(setUser({user : data?.profile}))
+        }
+      } 
+
   useEffect(() => {
     handleToGetAllWallets();
+    getProfile()
   }, []);
   return { user, usersWallets, isSubmitting, setIsSubmitting, usersWithdraws, settings };
 };

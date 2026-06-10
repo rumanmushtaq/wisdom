@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import usePackage from "@/hooks/use-package";
 import settingService from "@/services/setting";
 import { setSettings } from "@/store/slices/setting";
+import { setUser } from "@/store/slices/auth";
+import AuthService from "@/services/auth";
 
 const useDeposit = () => {
   const router = useRouter();
@@ -65,10 +67,19 @@ const useDeposit = () => {
     } catch (error) {}
   };
 
+    const getProfile = async () => {
+      const {data} = await AuthService.getProfile();
+      if (data?.success) {
+        console.log("get profile in header",data.profile);
+        dispatch(setUser({user : data?.profile}))
+      }
+    } 
+  
   useEffect(() => {
     handleToGetAllPackages();
     handleTogetUserDeposit();
     handleToGetSettings();
+    getProfile()
   }, []);
 
   const handleToChosePlan = (packageId: string) => {

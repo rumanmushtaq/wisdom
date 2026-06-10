@@ -137,7 +137,7 @@ export default function ReferralPage() {
             {/* Referral Link */}
             <div className="lg:col-span-1">
               <ReferralLinkDisplay
-                referralCode={user.referralCode}
+                referralCode={user?.referralCode}
                 referralLink={referralLink}
               />
             </div>

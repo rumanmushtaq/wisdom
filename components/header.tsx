@@ -56,7 +56,7 @@ export function Header() {
   useEffect(() => {
     if (user?.firstName || user?.username) {
       fetchNotifications();
-    }
+        }
   }, [user]);
 
   const fetchNotifications = async () => {
@@ -70,6 +70,7 @@ export function Header() {
       dispatch(setUnreadCount(response.data.unreadCount));
     }
   };
+
 
   const handleMarkAsRead = async (id: string) => {
     const response = await NotificationsService.markAsRead(id);

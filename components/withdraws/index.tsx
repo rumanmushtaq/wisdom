@@ -141,12 +141,33 @@ const Index = ({ user, usersWallets, settings }: any) => {
           </div>
         )}
 
-        <Button
-          type="submit"
-          className="w-full bg-primary rounded-lg cursor-pointer"
-        >
-          {isSubmitting ? "Processing..." : "Withdraw Now"}
-        </Button>
+        {(() => {
+          const min = Number(settings?.minDeposit ?? 0);
+          const max = Number(settings?.maxDeposit ?? Infinity);
+          const belowMin = amount > 0 && amount < min;
+          const aboveMax = amount > 0 && amount > max;
+          const hasError = belowMin || aboveMax;
+
+          return (
+            <Button
+              type="submit"
+              disabled={isSubmitting || hasError}
+              className={`w-full rounded-lg cursor-pointer transition-colors ${
+                hasError
+                  ? "bg-red-500 hover:bg-red-600 text-white border-red-500"
+                  : "bg-primary"
+              }`}
+            >
+              {isSubmitting
+                ? "Processing..."
+                : belowMin
+                  ? `Amount is less than minimum ($${min})`
+                  : aboveMax
+                    ? `Amount exceeds maximum ($${max})`
+                    : "Withdraw Now"}
+            </Button>
+          );
+        })()}
       </div>
     </form>
   );

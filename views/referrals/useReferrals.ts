@@ -20,7 +20,7 @@ const useReferrals = () => {
 
   const [referralStats, setReferralStats] = useState<any>(null);
   const [referralLink] = useState<string>(
-    `${process.env.NEXT_PUBLIC_FRONTEND_URL}/auth/signup?ref=${user.referralCode}`,
+    `${process.env.NEXT_PUBLIC_FRONTEND_URL}/auth/signup?ref=${user?.referralCode}`,
   );
 
   const handleToGetReferralsOfThisUser = async () => {
