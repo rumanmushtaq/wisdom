@@ -5,8 +5,16 @@ interface TaskProgressProps {
 }
 
 export function TaskProgress({ completed, total, dailyTarget }: TaskProgressProps) {
-  const percentage = (completed / total) * 100
-  const isOnTrack = completed >= dailyTarget
+  const percentage = total === 0 ? 0 : (completed / total) * 100;
+  const isOnTrack = completed >= dailyTarget;
+
+  console.log("-------------------")
+  console.log("complete", completed);
+  console.log("total", total);
+  console.log("dailyTarget", dailyTarget);
+
+  console.log('percentage', percentage)
+  console.log('isOnTrack', isOnTrack)
 
   return (
     <div className="glass p-6 rounded-xl">
