@@ -13,6 +13,9 @@ interface ReferredUser {
   totalEarned: number;
   tasksCompleted: number;
   tier: "bronze" | "silver" | "gold" | "platinum";
+  isActive?: boolean;
+  isVerified?: boolean;
+  credits?: number;
 }
 
 // Mock data
@@ -251,6 +254,12 @@ export default function ReferralPage() {
                     <th className="text-left py-3 px-4 text-foreground/60 font-medium">
                       Tier
                     </th>
+                    <th className="text-left py-3 px-4 text-foreground/60 font-medium">
+                      Status
+                    </th>
+                    <th className="text-left py-3 px-4 text-foreground/60 font-medium">
+                      Verified
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -265,7 +274,7 @@ export default function ReferralPage() {
                       </td>
                       <td className="py-3 px-4">{user.tasksCompleted ?? 0}</td>
                       <td className="py-3 px-4 font-semibold text-green-600 dark:text-green-400">
-                        +${(user.totalEarned || 0).toFixed(2)}
+                        +{(user.totalEarned || 0).toFixed(2)} Credits
                       </td>
                       <td className="py-3 px-4">
                         <span
@@ -273,6 +282,16 @@ export default function ReferralPage() {
                         >
                           {(user.tier || "bronze").charAt(0).toUpperCase() +
                             (user.tier || "bronze").slice(1)}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${user.isActive ? 'bg-green-500/20 text-green-600 dark:text-green-400' : 'bg-red-500/20 text-red-600 dark:text-red-400'}`}>
+                          {user.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${user.isVerified ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400' : 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400'}`}>
+                          {user.isVerified ? 'Verified' : 'Unverified'}
                         </span>
                       </td>
                     </tr>
