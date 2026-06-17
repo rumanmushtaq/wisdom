@@ -5,6 +5,7 @@ import { Header } from "@/components/header";
 import { AnimatedHero3D } from "@/components/animated-hero-3d";
 import { ArrowRight, Zap, TrendingUp, Users, Wallet } from "lucide-react";
 import useDashboard from "./useDashboard";
+import WhatsAppChannelModal from "@/components/whatsapp-channel-modal";
 
 export default function LandingPage() {
   const { accessToken, refreshToken, user } = useDashboard();
@@ -41,6 +42,7 @@ export default function LandingPage() {
 
   return (
     <>
+      <WhatsAppChannelModal userId={user?._id || "guest"} />
       <Header />
       <main className="bg-background">
         {/* Hero Section */}

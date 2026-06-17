@@ -7,6 +7,7 @@ import { QuickActions } from "@/components/dashboard/quick-actions";
 import { Wallet, Zap, Users, ArrowDownLeft } from "lucide-react";
 import useDashboard from "./useDashboard";
 import PackagesData from "@/components/dashboard/packages";
+import WhatsAppChannelModal from "@/components/whatsapp-channel-modal";
 
 export default function DashboardPage() {
   const { packages, user, stats, loading, handleToChosePlan } = useDashboard();
@@ -28,6 +29,7 @@ export default function DashboardPage() {
 
   return (
     <>
+      {user?._id && <WhatsAppChannelModal userId={user._id} />}
       <Header />
       <main className="min-h-screen bg-background">
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8">
