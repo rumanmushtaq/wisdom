@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/header";
 import { AnimatedHero3D } from "@/components/animated-hero-3d";
-import { ArrowRight, Zap, TrendingUp, Users, Wallet } from "lucide-react";
+import { ArrowRight, Zap, TrendingUp, Users, Wallet, Mail } from "lucide-react";
 import useDashboard from "./useDashboard";
-import WhatsAppChannelModal from "@/components/whatsapp-channel-modal";
+import WhatsAppChannelModal, { WhatsAppIcon } from "@/components/whatsapp-channel-modal";
 
 export default function LandingPage() {
   const { accessToken, refreshToken, user } = useDashboard();
@@ -264,16 +264,26 @@ export default function LandingPage() {
                   <li>
                     <Link
                       href="/contact"
-                      className="hover:text-primary transition-colors"
+                      className="hover:text-primary transition-colors flex items-center gap-2"
                     >
-                      support@wisdomworks.com
+                      <Mail className="h-4 w-4" />
+                      wisdomworksofficial@gmail.com
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/contact"
+                      className="hover:text-primary transition-colors flex items-center gap-2"
+                    >
+                      <WhatsAppIcon className="h-4 w-4" />
+                      +14842585346
                     </Link>
                   </li>
                 </ul>
               </div>
             </div>
             <div className="border-t border-border/40 pt-8 text-center text-sm text-muted-foreground">
-              <p>© 2025 Wisdom Works. All rights reserved.</p>
+              <p>© 2026 Wisdom Works. All rights reserved.</p>
             </div>
           </div>
         </footer>

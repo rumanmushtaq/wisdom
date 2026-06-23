@@ -18,7 +18,7 @@ interface WhatsAppIconProps {
   style?: CSSProperties;
 }
 
-function WhatsAppIcon({ className, style }: WhatsAppIconProps) {
+export function WhatsAppIcon({ className, style }: WhatsAppIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -171,7 +171,7 @@ export default function WhatsAppChannelModal({ userId }: WhatsAppChannelModalPro
         >
           {/* Close button */}
           <button
-            onClick={handleClose}
+            onClick={handleMaybeLater}
             id="whatsapp-modal-close"
             aria-label="Close modal"
             style={{
